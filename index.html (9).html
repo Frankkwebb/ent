@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENT 301 — Essentials of Entrepreneurship</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0eeea;
+    --border: #e2dfd8;
+    --text: #1a1a1a;
+    --text2: #6b6660;
+    --text3: #9b9590;
+    --blue: #1a56db;
+    --blue-light: #ebf0fd;
+    --blue-mid: #3b6dda;
+    --green: #0e7c4a;
+    --green-light: #e6f7ef;
+    --red: #b91c1c;
+    --red-light: #fef2f2;
+    --amber: #92400e;
+    --amber-light: #fffbeb;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+  .nav-logo span { color: var(--blue); }
+  .nav-score { font-size: 13px; color: var(--text2); display: none; }
+  .nav-score b { color: var(--text); }
+  .container { max-width: 780px; margin: 0 auto; padding: 2rem 1rem; }
+  .hero { text-align: center; margin-bottom: 2.5rem; padding-top: 1rem; }
+  .hero-badge { display: inline-block; background: var(--blue-light); color: var(--blue); font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 99px; margin-bottom: 14px; letter-spacing: 0.03em; }
+  .hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .hero p { font-size: 15px; color: var(--text2); max-width: 480px; margin: 0 auto 24px; line-height: 1.6; }
+  .mode-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 2rem; }
+  .mode-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; text-align: left; }
+  .mode-card:hover { border-color: var(--blue-mid); box-shadow: var(--shadow); }
+  .mode-card.selected { border-color: var(--blue); background: var(--blue-light); }
+  .mode-icon { font-size: 28px; margin-bottom: 10px; }
+  .mode-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .mode-card p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .config-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+  .config-section h3 { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+  .chapter-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ch-pill { font-size: 13px; padding: 5px 12px; border-radius: 99px; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; color: var(--text2); transition: all 0.12s; user-select: none; }
+  .ch-pill:hover { border-color: var(--blue-mid); color: var(--blue); }
+  .ch-pill.on { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .slider-row { display: flex; align-items: center; gap: 14px; }
+  .slider-row label { font-size: 14px; color: var(--text2); white-space: nowrap; }
+  .slider-row input[type=range] { flex: 1; accent-color: var(--blue); }
+  .slider-val { font-size: 15px; font-weight: 600; min-width: 32px; text-align: right; }
+  .start-btn { width: 100%; padding: 14px; background: var(--blue); color: #fff; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 600; cursor: pointer; letter-spacing: -0.01em; transition: background 0.15s; }
+  .start-btn:hover { background: #1345b7; }
+  #quiz { display: none; }
+  .top-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+  .progress-wrap { flex: 1; }
+  .progress-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--blue); border-radius: 3px; transition: width 0.3s ease; }
+  .q-counter { font-size: 13px; color: var(--text2); white-space: nowrap; }
+  .timer { font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: var(--surface2); color: var(--text2); min-width: 44px; text-align: center; }
+  .timer.warn { background: var(--amber-light); color: var(--amber); }
+  .timer.danger { background: var(--red-light); color: var(--red); }
+  .q-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+  .q-meta { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+  .q-badge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; }
+  .badge-ch { background: var(--blue-light); color: var(--blue); }
+  .badge-mode { background: var(--surface2); color: var(--text2); }
+  .q-text { font-size: 17px; font-weight: 500; line-height: 1.65; color: var(--text); margin-bottom: 1.5rem; }
+  .blank { display: inline-block; min-width: 100px; border-bottom: 2.5px solid var(--blue); padding: 0 6px 2px; color: var(--blue); font-weight: 600; text-align: center; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 14px; transition: all 0.12s; background: var(--surface); }
+  .opt:hover:not(.disabled) { border-color: var(--blue-mid); background: var(--blue-light); }
+  .opt-letter { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; color: var(--text2); transition: all 0.12s; }
+  .opt.correct { border-color: var(--green); background: var(--green-light); }
+  .opt.correct .opt-letter { background: var(--green); border-color: var(--green); color: #fff; }
+  .opt.wrong { border-color: var(--red); background: var(--red-light); }
+  .opt.wrong .opt-letter { background: var(--red); border-color: var(--red); color: #fff; }
+  .opt.show-correct { border-color: var(--green); background: var(--green-light); }
+  .opt.show-correct .opt-letter { background: var(--green); border-color: var(--green); color: #fff; }
+  .opt.disabled { cursor: default; }
+  .fitb-wrap { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .fitb-input { flex: 1; min-width: 200px; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 15px; outline: none; transition: border-color 0.15s; background: var(--surface); color: var(--text); }
+  .fitb-input:focus { border-color: var(--blue); }
+  .fitb-input.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .fitb-input.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .fitb-submit { padding: 11px 20px; background: var(--blue); color: #fff; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+  .fitb-submit:hover { background: #1345b7; }
+  .fitb-submit:disabled { background: var(--border); color: var(--text3); cursor: default; }
+  .feedback { margin-top: 14px; padding: 12px 16px; border-radius: var(--radius); font-size: 14px; line-height: 1.6; }
+  .feedback.correct { background: var(--green-light); color: var(--green); border: 1px solid #86efac; }
+  .feedback.wrong { background: var(--red-light); color: var(--red); border: 1px solid #fca5a5; }
+  .feedback strong { font-weight: 600; }
+  .action-row { display: flex; gap: 10px; justify-content: flex-end; align-items: center; }
+  .btn-ghost { padding: 9px 18px; border: 1px solid var(--border); background: transparent; border-radius: var(--radius); font-size: 14px; cursor: pointer; color: var(--text2); transition: all 0.12s; }
+  .btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+  .btn-primary { padding: 9px 20px; border: none; background: var(--blue); color: #fff; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+  .btn-primary:hover { background: #1345b7; }
+  .btn-end { padding: 9px 18px; border: 1px solid var(--border); background: transparent; border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--text3); }
+  .btn-end:hover { color: var(--red); border-color: var(--red); }
+  #score { display: none; }
+  .score-hero { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem 2rem; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
+  .score-pct { font-size: 64px; font-weight: 700; letter-spacing: -0.04em; color: var(--blue); line-height: 1; }
+  .score-pct.pass { color: var(--green); }
+  .score-pct.fail { color: var(--red); }
+  .score-grade { font-size: 18px; font-weight: 600; margin: 8px 0 4px; }
+  .score-sub { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; }
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .stat { background: var(--surface2); border-radius: var(--radius); padding: 14px; text-align: center; }
+  .stat .val { font-size: 28px; font-weight: 700; }
+  .stat .lbl { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .val.green { color: var(--green); }
+  .val.red { color: var(--red); }
+  .val.amber { color: var(--amber); }
+  .score-actions { display: flex; flex-direction: column; gap: 10px; }
+  .score-actions button { padding: 13px; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-restart { background: var(--blue); color: #fff; }
+  .btn-restart:hover { background: #1345b7; }
+  .btn-review { background: var(--surface); border: 1.5px solid var(--border) !important; color: var(--text); }
+  .btn-review:hover { color: var(--blue); }
+  .btn-home { background: var(--surface2); color: var(--text2); }
+  .btn-home:hover { background: var(--border); color: var(--text); }
+  .weak-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+  .weak-section h3 { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+  .ch-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+  .ch-bar-label { min-width: 90px; color: var(--text2); font-size: 12px; }
+  .ch-bar { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .ch-bar-fill { height: 100%; border-radius: 4px; background: var(--red); }
+  .ch-bar-count { min-width: 60px; text-align: right; color: var(--red); font-weight: 600; font-size: 12px; }
+  .review-list { display: flex; flex-direction: column; gap: 12px; margin-top: 1.25rem; }
+  .review-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; border-left: 3px solid var(--red); }
+  .review-q { font-size: 14px; font-weight: 500; margin-bottom: 6px; line-height: 1.55; }
+  .review-a { font-size: 13px; color: var(--text2); margin-top: 3px; }
+  .review-a .wrong-text { color: var(--red); font-weight: 600; }
+  .review-a .correct-text { color: var(--green); font-weight: 600; }
+  .section-title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .section-sub { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; }
+  .hidden { display: none !important; }
+  @media (max-width: 520px) {
+    .mode-cards { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 22px; }
+    .score-pct { font-size: 48px; }
+    .q-text { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">ENT<span>301</span></div>
+  <div class="nav-score" id="nav-score"></div>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="container">
+  <div class="hero">
+    <div class="hero-badge">FUTA • ENT 301 • Full Question Bank</div>
+    <h1>Essentials of Entrepreneurship</h1>
+    <p>All questions extracted from the official Q&amp;A PDF — Chapters 1 to 16. Fill-in-the-blank and multiple choice modes.</p>
+  </div>
+  <div class="mode-cards">
+    <div class="mode-card selected" data-mode="mcq" onclick="selectMode(this)">
+      <div class="mode-icon">🔘</div>
+      <h3>Multiple Choice</h3>
+      <p>Pick the correct option from four choices. Great for exam simulation.</p>
+    </div>
+    <div class="mode-card" data-mode="fitb" onclick="selectMode(this)">
+      <div class="mode-icon">✏️</div>
+      <h3>Fill in the Blank</h3>
+      <p>Type the answer yourself. Best for testing true recall.</p>
+    </div>
+    <div class="mode-card" data-mode="mixed" onclick="selectMode(this)">
+      <div class="mode-icon">🔀</div>
+      <h3>Mixed Mode</h3>
+      <p>Both MCQ and fill-in-the-blank in one session.</p>
+    </div>
+    <div class="mode-card" data-mode="timed" onclick="selectMode(this)">
+      <div class="mode-icon">⏱️</div>
+      <h3>Timed Mode</h3>
+      <p>20 seconds per question — CBT simulation under pressure.</p>
+    </div>
+  </div>
+  <div class="config-section">
+    <h3>Select Chapters</h3>
+    <div class="chapter-grid" id="ch-grid"></div>
+  </div>
+  <div class="config-section">
+    <h3>Number of Questions</h3>
+    <div class="slider-row">
+      <label>Questions:</label>
+      <input type="range" min="5" max="80" value="20" id="q-count" oninput="document.getElementById('q-count-val').textContent=this.value">
+      <span class="slider-val" id="q-count-val">20</span>
+    </div>
+  </div>
+  <button class="start-btn" onclick="startQuiz()">Start Quiz →</button>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="container">
+  <div class="top-bar">
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+    </div>
+    <div class="q-counter" id="q-counter">1 / 20</div>
+    <div class="timer hidden" id="timer">20</div>
+  </div>
+  <div class="q-card" id="q-card">
+    <div class="q-meta">
+      <span class="q-badge badge-ch" id="q-ch-badge">Chapter 1</span>
+      <span class="q-badge badge-mode" id="q-mode-badge">MCQ</span>
+    </div>
+    <div class="q-text" id="q-text"></div>
+    <div id="q-body"></div>
+    <div class="feedback hidden" id="feedback"></div>
+  </div>
+  <div class="action-row" id="action-row">
+    <button class="btn-end" onclick="confirmEnd()">End quiz</button>
+    <button class="btn-ghost hidden" id="skip-btn" onclick="skipQ()">Skip</button>
+    <button class="btn-primary hidden" id="next-btn" onclick="nextQ()">Next →</button>
+  </div>
+</div>
+
+<!-- SCORE -->
+<div id="score" class="container">
+  <div class="score-hero">
+    <div class="score-pct" id="s-pct">0%</div>
+    <div class="score-grade" id="s-grade">—</div>
+    <div class="score-sub" id="s-sub">—</div>
+    <div class="stats-row">
+      <div class="stat"><div class="val green" id="s-correct">0</div><div class="lbl">Correct</div></div>
+      <div class="stat"><div class="val red" id="s-wrong">0</div><div class="lbl">Wrong</div></div>
+      <div class="stat"><div class="val amber" id="s-skip">0</div><div class="lbl">Skipped</div></div>
+    </div>
+    <div class="score-actions">
+      <button class="btn-restart" onclick="restartSame()">🔁 Restart with same settings</button>
+      <button class="btn-review" id="review-btn" onclick="showReview()" style="border:1.5px solid var(--border)">📋 Review wrong answers</button>
+      <button class="btn-home" onclick="goHome()">🏠 Back to home</button>
+    </div>
+  </div>
+  <div class="weak-section" id="weak-section"></div>
+  <div id="review-section" class="hidden">
+    <h2 class="section-title">Review</h2>
+    <p class="section-sub">All questions you got wrong or skipped.</p>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const CHAPTERS = {
+  1:"Entrepreneurship & Intrapreneurship",
+  2:"Nigerian Entrepreneurial Environment",
+  3:"Creativity & Intellectual Property",
+  4:"Technological Entrepreneurship",
+  5:"Management of Innovation",
+  6:"Family Business & Succession",
+  7:"Women Entrepreneurship",
+  8:"Social Entrepreneurship",
+  9:"Business Opportunity Evaluation",
+  10:"Concepts of Business & New Venture",
+  11:"Theories of Growth",
+  12:"Sources of Funds",
+  13:"Marketing",
+  14:"Ethics & Social Responsibility",
+  15:"New Opportunities for Expansion",
+  16:"Managing Transition from Start-up to Growth"
+};
+
+const DB = [
+// ===================== CHAPTER 1 =====================
+{ch:1,q:"The concept of entrepreneurship was first used in the early _____.",a:"18th century",d:["16th century","17th century","18th century","19th century"]},
+{ch:1,q:"Who was the first person to use the concept of entrepreneurship?",a:"Richard Cantillon",d:["Joseph Schumpeter","Jean-Baptiste Say","Frank Knight","Richard Cantillon"]},
+{ch:1,q:"The word 'entrepreneurship' was derived from the French word _____.",a:"entrepreneur",d:["entreprendre","entrepreneur","venture","commercant"]},
+{ch:1,q:"'Entreprendre' means to _____ in French.",a:"undertake",d:["invest","undertake","profit","organize"]},
+{ch:1,q:"_____ is the process and activities of nurturing and sustaining a business enterprise.",a:"Entrepreneurship",d:["Entrepreneurship","Intrapreneurship","Management","Commerce"]},
+{ch:1,q:"An enterprise is created by a(n) _____.",a:"entrepreneur",d:["entrepreneur","investor","manager","banker"]},
+{ch:1,q:"According to Joseph Schumpeter, an Australian Economist, the single function constituting entrepreneurship is _____.",a:"innovation",d:["profit","innovation","risk-taking","capital formation"]},
+{ch:1,q:"_____ and _____ (1992) state entrepreneurship is a continuous process of creating something different that has value to users.",a:"Hisrich, Peters",d:["Hisrich, Peters","Drucker, Dees","Knight, Say","Cantillon, Mill"]},
+{ch:1,q:"UNDP stands for _____.",a:"United Nations Development Program",d:["United Nations Development Program","United Nations Development Policy","Universal Nations Development Program","United Nations Directive Plan"]},
+{ch:1,q:"UNDP (2010) defines entrepreneurship as the process of using private initiative to transform a business concept into a new venture or to grow and diversify an existing venture with high _____ potential.",a:"growth",d:["growth","profit","market","financial"]},
+{ch:1,q:"_____ implies the provision of a new and useful idea and its immediate transfer to market as well as its usage in an organisation.",a:"Innovation",d:["Invention","Creativity","Innovation","Diffusion"]},
+{ch:1,q:"In fact, _____ means making practical those thoughts arising from creativity.",a:"Innovation",d:["Invention","Innovation","Enterprise","Commerce"]},
+{ch:1,q:"_____ is to use mental capabilities to provide new thoughts.",a:"Creativity",d:["Innovation","Imagination","Creativity","Invention"]},
+{ch:1,q:"The four common aspects of entrepreneurship include risk taking, creativity, independence, and _____.",a:"rewards",d:["rewards","fame","capital","technology"]},
+{ch:1,q:"An entrepreneur is anyone who has the capacity and willingness to undertake conception, organisation, and management of a productive venture, seeking _____ as a reward.",a:"profit",d:["profit","fame","power","stability"]},
+{ch:1,q:"According to Di-Masi (2010), an entrepreneur is the person who perceives the market opportunity, motivates, drives, and _____ resources to meet it.",a:"mobilizes",d:["mobilizes","sells","borrows","creates"]},
+{ch:1,q:"Which of the following is NOT a characteristic of an entrepreneur (as listed)?",a:"Speed",d:["Self-control","Risk Taking","Leadership","Speed"]},
+{ch:1,q:"_____ entrepreneurs have the ability to think newer, better, and more economical ideas of business organisation and management.",a:"Innovative Entrepreneurs",d:["Innovative Entrepreneurs","Fabian Entrepreneurs","Drone Entrepreneurs","Social Entrepreneurs"]},
+{ch:1,q:"The dictionary meaning of 'Fabian' is a person seeking victory by _____ rather than by a decisive battle.",a:"delay",d:["delay","force","investment","innovation"]},
+{ch:1,q:"'Drone' entrepreneurs are considered as _____ and are resistant to change.",a:"Old school",d:["Old school","Innovative","Visionary","Social"]},
+{ch:1,q:"_____ drive social innovation and transformation in education, health, human rights, worker's rights, and environment.",a:"Social Entrepreneurs",d:["Social Entrepreneurs","Drone Entrepreneurs","Fabian Entrepreneurs","Corporate Entrepreneurs"]},
+{ch:1,q:"The three factors that push an individual to be on their own are Push factors, Pull Factors, and _____ Factors.",a:"Supportive",d:["Supportive","Market","Financial","Social"]},
+{ch:1,q:"_____ is defined as a method by which individuals, in association with existing organisations, create a new organisation or initiate renewal within the organisation.",a:"Corporate entrepreneurship",d:["Corporate entrepreneurship","Intrapreneurship","Franchising","Licensing"]},
+{ch:1,q:"_____ involves adding new business (or portions of new business via equity investments) to the corporation.",a:"Corporate venturing",d:["Intrapreneurship","Strategic entrepreneurship","Corporate venturing","Spin-off"]},
+{ch:1,q:"_____ involves the exhibition of large-scale innovations adopted in a firm's pursuit of competitive advantage.",a:"Strategic Entrepreneurship",d:["Corporate venturing","Strategic Entrepreneurship","Intrapreneurship","Social entrepreneurship"]},
+{ch:1,q:"Stoner (1999) defines _____ as corporate entrepreneurship whereby an organisation seeks to expand by exploring new opportunities through new combinations of existing resources.",a:"Intrapreneurship",d:["Franchising","Intrapreneurship","Licensing","Joint venture"]},
+{ch:1,q:"Every innovative activity enhances a company's _____.",a:"competitive advantage",d:["competitive advantage","profit margin","brand value","market share"]},
+{ch:1,q:"According to Guth-Ginsberg (1990), which of the following is NOT a factor that encourages intrapreneurship?",a:"Employee salaries",d:["The External Environment","Organisational Setting","Management Activities","Employee salaries"]},
+{ch:1,q:"AMP stands for _____.",a:"Australian Market Process",d:["Australian Market Process","American Management Program","Asset Management Protocol","Advanced Market Practice"]},
+{ch:1,q:"Schumpeter (1951) stated that _____ was the first to introduce the concept of entrepreneur in 1755.",a:"Richard Cantillon",d:["Richard Cantillon","Jean-Baptiste Say","Frank Knight","Israel Kirzner"]},
+{ch:1,q:"Cantillon recognises three types of agents in the economic system: Landowners, Entrepreneurs, and _____.",a:"Labourers",d:["Labourers","Managers","Bankers","Traders"]},
+{ch:1,q:"The entrepreneurial class accomplishes its task by engaging in pure _____.",a:"arbitrage",d:["arbitrage","investment","innovation","production"]},
+{ch:1,q:"_____ means simultaneous purchase and sale of an asset in order to profit from a difference in price.",a:"Arbitrage",d:["Speculation","Arbitrage","Hedging","Short selling"]},
+{ch:1,q:"Cantillon recognises that arbitrage always involves _____.",a:"uncertainty",d:["uncertainty","profit","risk insurance","certainty"]},
+{ch:1,q:"Jean-Baptiste Say was the first recognised professor of economics in _____ and ran his own business.",a:"Europe",d:["Europe","America","France","Britain"]},
+{ch:1,q:"Say adds to Cantillon's definition by including the idea that entrepreneurs had to be _____.",a:"Leaders",d:["Inventors","Leaders","Bankers","Visionaries"]},
+{ch:1,q:"The Austrian Market Process (AMP) idea was influenced by _____.",a:"Joseph Alois Schumpeter",d:["Joseph Alois Schumpeter","Richard Cantillon","Frank Knight","Israel Kirzner"]},
+{ch:1,q:"Schumpeter (1934) defines the entrepreneur as the co-ordinator of production and agent of change. He views entrepreneurship as a '_____'.",a:"Creative destruction",d:["Creative destruction","Market equilibrium","Economic growth","Social development"]},
+{ch:1,q:"Frank Knight (1885–1972) published his major contributions in his doctoral dissertation '_____' first published in 1921.",a:"Risk, Uncertainty and Profit",d:["Risk, Uncertainty and Profit","Competition and Entrepreneurship","The Theory of Economic Development","Wealth of Nations"]},
+{ch:1,q:"Frank Knight was the first to clearly distinguish between _____ and _____.",a:"risk and uncertainty",d:["risk and uncertainty","profit and loss","supply and demand","invention and innovation"]},
+{ch:1,q:"According to Frank Knight, risk can be _____ against.",a:"insured",d:["insured","ignored","speculated","hedged"]},
+{ch:1,q:"The economic function of the entrepreneur is bearing the real or _____ uncertainty.",a:"true",d:["true","manageable","calculable","insurable"]},
+{ch:1,q:"Israel Kirzner (1973) is a(n) _____ economist.",a:"Austrian",d:["Austrian","American","French","British"]},
+{ch:1,q:"Kirzner sees entrepreneurs as persons who are alert to discover and exploit _____ opportunities.",a:"profit",d:["profit","social","technological","political"]},
+{ch:1,q:"The Kirzner entrepreneur does not need to own _____ and profit arises out of the intermediary function.",a:"resources",d:["resources","information","ideas","customers"]},
+{ch:1,q:"Possibilities of profitable exchange exist because of _____ knowledge.",a:"imperfect",d:["imperfect","perfect","shared","public"]},
+{ch:1,q:"The psychological theory of entrepreneurship is about individual _____.",a:"behaviour",d:["behaviour","wealth","networks","technology"]},
+{ch:1,q:"David McClelland argued that the drive towards achievement is the basis of activity for most _____.",a:"entrepreneurs",d:["entrepreneurs","politicians","academics","workers"]},
+{ch:1,q:"_____ claims that the environment in which an individual is raised determines the entrepreneurial urge of that individual.",a:"Thomas Cochran",d:["Thomas Cochran","Frank Young","David McClelland","Israel Kirzner"]},
+{ch:1,q:"_____ sociologist focuses his theory on inter-group relationships and how they affect entrepreneurial activities.",a:"Frank Young",d:["Thomas Cochran","Frank Young","David McClelland","Reynolds"]},
+{ch:1,q:"Reynolds (1991) identified four social contexts related to entrepreneurial opportunity. Which is NOT one of them?",a:"Political connections",d:["Social networks","Individual Background","Ethnic Identification","Political connections"]},
+{ch:1,q:"The resource-based theory stresses the importance of _____, social, and human resources.",a:"financial",d:["financial","physical","natural","technological"]},
+{ch:1,q:"The human capital entrepreneurship theory identifies two underlying factors: education and _____.",a:"experience",d:["experience","wealth","networks","technology"]},
+// ===================== CHAPTER 2 =====================
+{ch:2,q:"The _____ in which all organisations operate is never static and has the capacity to influence the market.",a:"Environment",d:["Environment","Strategy","Structure","Culture"]},
+{ch:2,q:"The performance of Nigerian enterprises is predicated on factors such as low sales, high cost of production, and _____.",a:"poor power supply",d:["poor power supply","high GDP","excess labour","strong currency"]},
+{ch:2,q:"_____ includes the surroundings within and outside in which the business operates.",a:"Business Environment",d:["Business Environment","Corporate culture","Market segment","Industry structure"]},
+{ch:2,q:"The external environment is commonly referred to as the _____ environment.",a:"macro",d:["micro","macro","internal","performance"]},
+{ch:2,q:"PESTEL stands for Political, Economic, Social, Technological, _____ and Legal.",a:"Environmental",d:["Educational","Environmental","Entrepreneurial","Evaluative"]},
+{ch:2,q:"The _____ environment consists of competitors, suppliers, and indirect service providers.",a:"performance",d:["macro","performance","internal","external"]},
+{ch:2,q:"The _____ environment is concerned with the resources, processes, and objectives an organisation uses to achieve its goals.",a:"internal",d:["macro","performance","internal","external"]},
+{ch:2,q:"_____ is the process of gathering information about a company's external events and relationships to assist top management in decision making.",a:"Environmental scanning",d:["Market research","Environmental scanning","Business intelligence","SWOT analysis"]},
+{ch:2,q:"Information is gathered in environmental scanning using company reports, newspapers, industry reports, and _____.",a:"Marketing intelligence reports",d:["Marketing intelligence reports","Customer feedback forms","Employee surveys","Government gazettes"]},
+{ch:2,q:"CBN stands for _____.",a:"Central Bank of Nigeria",d:["Central Bank of Nigeria","Commercial Bank of Nigeria","Central Bureau of Nigeria","Credit Bank of Nigeria"]},
+{ch:2,q:"NDIC stands for _____.",a:"Nigeria Deposit Insurance Commission",d:["Nigeria Deposit Insurance Commission","National Development Commission","Nigeria Direct Investment Commission","National Deposit Council"]},
+{ch:2,q:"The major objectives of players in the market business environment are maximisation of _____ and minimisation of _____.",a:"profit and cost",d:["profit and cost","revenue and loss","sales and expenses","assets and liabilities"]},
+{ch:2,q:"SWOT stands for Strengths, Weaknesses, Opportunities and _____.",a:"Threats",d:["Targets","Threats","Trends","Tactics"]},
+{ch:2,q:"_____ are attributes of the organisation that positively impact its ability to achieve objectives.",a:"Strengths",d:["Strengths","Weaknesses","Opportunities","Threats"]},
+{ch:2,q:"_____ are external conditions that potentially threaten the success of a business in the present or future.",a:"Threats",d:["Strengths","Weaknesses","Opportunities","Threats"]},
+{ch:2,q:"The internal business environment comprises of Strengths and _____.",a:"Weaknesses",d:["Opportunities","Threats","Weaknesses","Risks"]},
+{ch:2,q:"SMART stands for Specific, Measurable, Attainable, _____ and Time-bound.",a:"Reliable",d:["Realistic","Reliable","Rational","Relevant"]},
+{ch:2,q:"Business environment is a significant factor for a business enterprise's effective performance and _____.",a:"Sustainability",d:["Sustainability","Profitability","Expansion","Innovation"]},
+{ch:2,q:"The _____ environment relates to the period of interaction between business, society and government before laws are enacted.",a:"political",d:["political","economic","social","legal"]},
+{ch:2,q:"Technology is vital for global competitive advantage and is the major driver of _____.",a:"globalisation",d:["industrialisation","globalisation","privatisation","modernisation"]},
+// ===================== CHAPTER 3 =====================
+{ch:3,q:"_____ enable people to benefit from their innovations by preventing others from copying the inventor's creativity.",a:"Intellectual Property Rights",d:["Intellectual Property Rights","Trade secrets","Patents only","Copyright only"]},
+{ch:3,q:"_____ refers to the invention of new things that have value.",a:"Creativity",d:["Patent","Creativity","Copyright","Innovation"]},
+{ch:3,q:"_____ is the bringing of something which did not exist before, either as a product, process, or thought.",a:"Creativity",d:["Creativity","Innovation","Patent","Trademark"]},
+{ch:3,q:"According to WIPO, intellectual property is traditionally divided into two branches: industrial property and _____.",a:"copyright",d:["copyright","trade secrets","patents","trademarks"]},
+{ch:3,q:"Intellectual Property Law is also called _____ right of exploitation.",a:"monopoly",d:["monopoly","exclusive","absolute","perpetual"]},
+{ch:3,q:"The American colonies had laws granting patents before the American Revolution in _____.",a:"1775",d:["1765","1775","1785","1800"]},
+{ch:3,q:"Congress adopted the first Federal trademark law in _____.",a:"1870",d:["1850","1860","1870","1890"]},
+{ch:3,q:"WIPO stands for _____.",a:"World Intellectual Property Organization",d:["World Intellectual Property Organization","World Investment and Patent Office","World Industry Organization","World Integrated Patent Office"]},
+{ch:3,q:"LFN stands for _____.",a:"Laws of the Federation of Nigeria",d:["Laws of the Federation of Nigeria","Legal Framework of Nigeria","Licensed Federation of Nigeria","Laws and Finance of Nigeria"]},
+{ch:3,q:"NCC stands for _____.",a:"Nigerian Copyright Commission",d:["Nigerian Copyright Commission","National Communications Commission","Nigerian Commerce Commission","National Copyright Council"]},
+{ch:3,q:"PVP stands for _____.",a:"Plant Variety Protection",d:["Plant Variety Protection","Patent Value Protection","Private Venture Program","Product Value Protocol"]},
+{ch:3,q:"NOTAP stands for _____.",a:"National Office for Technology Acquisition and Promotion",d:["National Office for Technology Acquisition and Promotion","National Organisation for Technical Advancement","National Office for Trade Acquisition","National Organisation for Technology Development"]},
+{ch:3,q:"_____ is a new, inventive, and industrially applicable technical solution to a given technical problem.",a:"Invention",d:["Invention","Patent","Innovation","Trademark"]},
+{ch:3,q:"_____ is the legal document that describes the invention and grants a property right to the inventor.",a:"Patent",d:["Copyright","Patent","Trademark","Trade secret"]},
+{ch:3,q:"A patent gives protection limited in time generally to _____ years.",a:"20",d:["10","15","20","25"]},
+{ch:3,q:"A patent gives the right to the inventor to make, use, or sell anything. True or False?",a:"False",d:["True","False","Partially true","Depends on country"]},
+{ch:3,q:"_____ is defined as a distinctive sign that distinguishes the trademark owner's goods and services from those of competitors.",a:"Trademark",d:["Copyright","Patent","Trademark","Trade secret"]},
+{ch:3,q:"A trademark reflects the _____ of the company and has commercial value for consumers.",a:"image",d:["image","size","profit","history"]},
+{ch:3,q:"If a trademark is not exploited for _____ consecutive years, trademark protection is lost.",a:"five",d:["two","three","five","ten"]},
+{ch:3,q:"Trademark must be _____ so that customers can differentiate it from other similar products.",a:"distinctive",d:["distinctive","expensive","colourful","registered"]},
+{ch:3,q:"_____ is the legal term for confidential business information which the owner wants to keep secret.",a:"Trade secret",d:["Trade secret","Patent","Copyright","Trademark"]},
+{ch:3,q:"There is no formal registration or application procedure for trade secrets. True or False?",a:"True",d:["True","False","Depends on country","Depends on industry"]},
+{ch:3,q:"_____ is a branch of law which deals with the rights of intellectual creators.",a:"Copyright law",d:["Patent law","Copyright law","Trade secret law","Trademark law"]},
+{ch:3,q:"Copyright only protects the _____, not the ideas themselves.",a:"forms of expression of ideas",d:["forms of expression of ideas","physical documents","published works only","registered trademarks"]},
+{ch:3,q:"Copyright is protected in Nigeria by the Copyright Act derived from the _____ Convention.",a:"Berne",d:["Geneva","Paris","Berne","Vienna"]},
+{ch:3,q:"_____ is the international agreement that deals with the protection of literary and artistic works.",a:"Berne Convention",d:["Berne Convention","Paris Convention","Vienna Convention","Geneva Convention"]},
+{ch:3,q:"In Nigeria, copyright protection is _____ upon the creation of copyright works.",a:"automatic",d:["voluntary","automatic","registered","conditional"]},
+{ch:3,q:"The agency in Nigeria charged with the primary responsibility for all copyright matters is _____.",a:"NCC – Nigerian Copyright Commission",d:["NCC – Nigerian Copyright Commission","SON","NAFDAC","NOTAP"]},
+{ch:3,q:"The power of a copyright inspector is analogous to that of _____.",a:"a police officer",d:["a police officer","a judge","a barrister","a magistrate"]},
+{ch:3,q:"Which of the following is NOT eligible for copyright protection in Nigeria?",a:"Decisions of courts",d:["Literary works","Artistic works","Decisions of courts","Sound recordings"]},
+{ch:3,q:"The duration of copyright for literary, musical, or artistic works in Nigeria expires _____ after the author's death.",a:"70 years",d:["50 years","60 years","70 years","99 years"]},
+{ch:3,q:"If the author is a corporate body or government, copyright expires _____ after the end of the year the work was first published.",a:"70 years",d:["50 years","60 years","70 years","99 years"]},
+{ch:3,q:"For cinematographic film, photograph, and broadcasting, copyright expires _____ after the end of the year the work was made or published.",a:"50 years",d:["25 years","40 years","50 years","70 years"]},
+{ch:3,q:"When a work is created by an employee for the purpose of creating that work, who owns the copyright?",a:"The employer",d:["The employer","The employee","The government","Both equally"]},
+{ch:3,q:"Authors may sell the rights of their works in return for payments called _____.",a:"royalties",d:["royalties","dividends","profits","salaries"]},
+{ch:3,q:"Transfer of copyright may take one of two forms: assignments and _____.",a:"licenses",d:["licenses","sales","donations","registrations"]},
+{ch:3,q:"A _____ is a transfer of property right in copyright.",a:"assignment",d:["license","assignment","waiver","grant"]},
+{ch:3,q:"_____ means the owner of copyright retains ownership but authorises a third party to carry out acts covered by economic rights.",a:"Licensing",d:["Assignment","Licensing","Transfer","Donation"]},
+{ch:3,q:"Where the copyright owner agrees not to authorise any other party to carry out the licensed acts, the license is _____.",a:"exclusive",d:["exclusive","non-exclusive","absolute","partial"]},
+{ch:3,q:"WCT stands for _____.",a:"WIPO Copyright Treaty",d:["WIPO Copyright Treaty","World Commerce Treaty","World Copyright Treaty","WIPO Commerce Terms"]},
+{ch:3,q:"TRIPS stands for _____.",a:"Trade-Related Aspects of Intellectual Property Rights",d:["Trade-Related Aspects of Intellectual Property Rights","Trade Rights in Property and Services","Technology Research in Patents","Trade Regulations for Intellectual Property"]},
+{ch:3,q:"The symbol _____ is used to indicate copyright.",a:"©",d:["©","®","™","℗"]},
+{ch:3,q:"For sound recordings, the symbol _____ is used instead of ©.",a:"℗",d:["®","℗","™","©"]},
+{ch:3,q:"Does Nigeria operate a centralised system of registration of copyright?",a:"No",d:["No","Yes","Partially","Only for literary works"]},
+{ch:3,q:"An _____ of copyright is the reproduction, distribution, or performance of any copyright work without permission.",a:"infringement",d:["infringement","assignment","license","transfer"]},
+{ch:3,q:"A very important exception to copyright infringement is the concept known as _____.",a:"fair use",d:["fair use","open access","public domain","compulsory license"]},
+{ch:3,q:"The law permits the use of portions of copyrighted works for criticism, comment, teaching, and _____.",a:"research",d:["research","commercial use","redistribution","adaptation"]},
+{ch:3,q:"In Nigeria law, the first person who invented the item is entitled to the patent. If unclear, the NCC decides in a proceeding known as _____.",a:"interference",d:["interference","arbitration","mediation","litigation"]},
+{ch:3,q:"Most other countries grant patents to the _____ rather than the first inventor.",a:"first person to file the patent application",d:["first person to file the patent application","government","largest company","inventor's employer"]},
+{ch:3,q:"The overall appearance of a product's packaging is known as _____.",a:"trade dress",d:["trade dress","trademark","packaging","brand image"]},
+{ch:3,q:"_____ carries no obligation to compensate the right owner for use of his work without authorisation.",a:"Free use",d:["Free use","Fair use","Compulsory license","Non-voluntary license"]},
+// ===================== CHAPTER 4 =====================
+{ch:4,q:"_____ is an important phenomenon related to the creation of wealth individually and at the national level.",a:"Technological Entrepreneurship",d:["Technological Entrepreneurship","Social Entrepreneurship","Corporate venturing","Intrapreneurship"]},
+{ch:4,q:"Another word for technological entrepreneurship is _____.",a:"techno-preneurship",d:["techno-preneurship","digital entrepreneurship","cyber entrepreneurship","info-preneurship"]},
+{ch:4,q:"The Canadian Academy of Engineers (1998) considers technological entrepreneurship as the innovative utilisation of _____ knowledge.",a:"scientific and technical-based",d:["scientific and technical-based","social and cultural","financial and economic","political and legal"]},
+{ch:4,q:"_____ involves the provision of technical services, while Commercial entrepreneurship involves provision of non-technical service.",a:"Technological entrepreneurship",d:["Technological entrepreneurship","Social entrepreneurship","Corporate entrepreneurship","Family entrepreneurship"]},
+{ch:4,q:"Dorf and Byers (2005) define technological entrepreneurship as a business leadership style that identifies _____ opportunities at commercial levels.",a:"high potential, high technology",d:["high potential, high technology","low-risk, high-reward","niche market","social impact"]},
+{ch:4,q:"The Industrial Revolution took place between the late 18th and early 19th centuries in _____.",a:"Britain",d:["France","Germany","Britain","United States"]},
+{ch:4,q:"The Industrial Revolution includes introduction of machines, use of inanimate sources of energy, and introduction of new and abundant _____ materials.",a:"raw",d:["raw","synthetic","imported","digital"]},
+{ch:4,q:"RMRDC stands for _____.",a:"Raw Materials Research and Development Council",d:["Raw Materials Research and Development Council","Resource Management Council","Rural Materials Research Corporation","Research Management Development Council"]},
+{ch:4,q:"TIC stands for _____.",a:"Technology Incubation Centre",d:["Technology Incubation Centre","Trade and Industry Commission","Technical Innovation Cooperative","Technology Investment Committee"]},
+{ch:4,q:"FIIRO stands for _____.",a:"Federal Institute of Industrial Research, Oshodi",d:["Federal Institute of Industrial Research, Oshodi","Federal Institute of Innovation and Research","Federal Investment and Industry Research Organisation","Federal Institute for International Relations"]},
+{ch:4,q:"How many years are patents usually valid for?",a:"20 years",d:["10 years","15 years","20 years","25 years"]},
+{ch:4,q:"The basic types of patent are Utility patent, Plant patent, and _____ patent.",a:"Design",d:["Design","Process","Service","Method"]},
+{ch:4,q:"_____ is the oldest form of protection for intellectual property.",a:"Trade secrets",d:["Copyright","Patent","Trademark","Trade secrets"]},
+{ch:4,q:"Thomas Savery (1698) and Thomas Newcomen (1705) introduced the _____.",a:"steam engine",d:["steam engine","printing press","locomotive","telegraph"]},
+{ch:4,q:"Consumers use the _____ to link the reputation and goodwill of the enterprise to its service or product.",a:"Trademark / service mark",d:["Trademark / service mark","Patent","Copyright","Trade secret"]},
+// ===================== CHAPTER 5 =====================
+{ch:5,q:"_____ is the systematic application of creative ideas to explore market opportunities.",a:"Innovation",d:["Innovation","Creativity","Invention","Entrepreneurship"]},
+{ch:5,q:"Drucker (1985) warned that an enterprise that does not innovate inevitably _____ and _____.",a:"ages and declines",d:["ages and declines","grows and stagnates","fails and closes","shrinks and collapses"]},
+{ch:5,q:"OECD stands for _____.",a:"Organisation for Economic Co-operation and Development",d:["Organisation for Economic Co-operation and Development","Organisation for Economic Commerce","Office for Economic Coordination","Organisation for Entrepreneurial Cooperation"]},
+{ch:5,q:"By nature, innovations have been categorized into radical, disruptive, incremental, and _____ innovation.",a:"eco",d:["eco","digital","social","technological"]},
+{ch:5,q:"Radical innovation is otherwise known as _____ innovation.",a:"breakthrough",d:["breakthrough","disruptive","incremental","eco"]},
+{ch:5,q:"The term 'disruptive innovation' was first defined and analysed by _____.",a:"Clayton Christensen",d:["Clayton Christensen","Joseph Schumpeter","Peter Drucker","Michael Porter"]},
+{ch:5,q:"The mass production of automobiles is an example of _____ innovation.",a:"disruptive",d:["incremental","radical","disruptive","eco"]},
+{ch:5,q:"Disruptive innovations tend to be produced by _____ in start-ups.",a:"Entrepreneurs",d:["Entrepreneurs","Managers","Scientists","Governments"]},
+{ch:5,q:"_____ occurs when a product fits a new or emerging market segment not being served by existing firms.",a:"New market disruption",d:["Radical innovation","New market disruption","Incremental innovation","Eco-innovation"]},
+{ch:5,q:"Incremental innovation involves new product characteristics with minor or _____ changes.",a:"incremental",d:["incremental","radical","disruptive","eco"]},
+{ch:5,q:"_____ is the production, assimilation, or exploitation of a product that reduces environmental impact.",a:"Eco-innovation",d:["Eco-innovation","Green marketing","Sustainable business","Environmental management"]},
+{ch:5,q:"Eco-innovation can be categorized into external and _____ eco-innovation.",a:"internal",d:["internal","radical","disruptive","incremental"]},
+{ch:5,q:"_____ is the introduction of a good or service that is new or significantly improved with respect to its characteristics.",a:"Product innovation",d:["Product innovation","Process innovation","Marketing innovation","Organisational innovation"]},
+{ch:5,q:"GPS stands for _____.",a:"Global Positioning System",d:["Global Positioning System","Global Procurement System","General Positioning Satellite","Global Product System"]},
+{ch:5,q:"RFID stands for _____.",a:"Radio Frequency Identification",d:["Radio Frequency Identification","Random Field Identification","Remote Facility Imaging Data","Radio Facility Identification"]},
+{ch:5,q:"Marketing innovation is the implementation of a _____ marketing method.",a:"new",d:["new","traditional","digital","viral"]},
+{ch:5,q:"New pricing methods whose sole purpose is to differentiate prices by customer segments are not considered _____.",a:"innovation",d:["innovation","pricing","strategy","marketing"]},
+{ch:5,q:"_____ Innovation is the implementation of a new organisational method in the firm's business practices, workplace organisation, or external relations.",a:"Organisational",d:["Organisational","Product","Marketing","Process"]},
+{ch:5,q:"The _____ model suggests that advances in science determine the rate and direction of innovation through technology-push.",a:"Linear",d:["Linear","Demand-pull","Evolutionary","National system"]},
+{ch:5,q:"Schumpeter (1934) considered entrepreneurship as the _____ that disrupts the stationary circular flow of the economy.",a:"catalyst",d:["catalyst","barrier","stabiliser","regulator"]},
+{ch:5,q:"Schumpeter identifies three stages of his theory of innovation: Invention, Innovation, and _____.",a:"Diffusion",d:["Distribution","Diffusion","Deployment","Discovery"]},
+{ch:5,q:"An _____ discovers new methods and new materials.",a:"Inventor",d:["Entrepreneur","Innovator","Inventor","Manager"]},
+{ch:5,q:"An _____ utilises inventions and discoveries to make new combinations.",a:"Innovator",d:["Innovator","Inventor","Entrepreneur","Manager"]},
+{ch:5,q:"An _____ converts the technical work into economic performance.",a:"Entrepreneur",d:["Innovator","Inventor","Entrepreneur","Manager"]},
+{ch:5,q:"The _____ approach stresses the importance of past decisions which may constrain present innovation.",a:"Evolutionary",d:["Evolutionary","Induced innovation","National System","Linear"]},
+{ch:5,q:"The _____ system of innovation provides the conceptual framework for studying both developed and developing economies.",a:"national",d:["national","regional","global","industrial"]},
+{ch:5,q:"NUC stands for _____.",a:"National Universities Commission",d:["National Universities Commission","Nigerian Universities Council","National Union Council","Nigerian Undergraduate Commission"]},
+{ch:5,q:"MAN stands for _____.",a:"Manufacturers Association of Nigeria",d:["Manufacturers Association of Nigeria","Ministry of Agriculture Nigeria","Management Association of Nigeria","Metal Association of Nigeria"]},
+{ch:5,q:"SMEDAN stands for _____.",a:"Small and Medium Scale Enterprises Development Agency of Nigeria",d:["Small and Medium Scale Enterprises Development Agency of Nigeria","Small and Micro Enterprises Development Agency","Small and Medium Enterprises Development Authority","Special Medium Enterprises Development Agency"]},
+{ch:5,q:"SON stands for _____.",a:"Standard Organisation of Nigeria",d:["Standard Organisation of Nigeria","State Oil Nigeria","Standards Office Nigeria","Special Operations Nigeria"]},
+{ch:5,q:"NIDB stands for _____.",a:"Nigeria Industrial Development Bank",d:["Nigeria Industrial Development Bank","National Investment Development Board","Nigeria Industry and Development Bureau","National Infrastructure Development Bank"]},
+// ===================== CHAPTER 6 =====================
+{ch:6,q:"In most nations, approximately _____ of small firms can be classified as family businesses.",a:"70%",d:["50%","60%","70%","80%"]},
+{ch:6,q:"According to Peter Drucker, the majority of businesses everywhere are family-controlled and _____.",a:"family managed",d:["family managed","family owned","publicly listed","government supported"]},
+{ch:6,q:"A family business is one where a single family owns _____ percent of the business.",a:"51–100",d:["1–49","25–50","51–100","75–100"]},
+{ch:6,q:"_____ is the process of transitioning the management and ownership of the business to the next generation of family members.",a:"Family business succession",d:["Change management","Business restructuring","Family business succession","Corporate venturing"]},
+{ch:6,q:"The Three Circle Model illustrates the interaction of _____, Management, and Family in a family business.",a:"Ownership",d:["Ownership","Finance","Operations","Strategy"]},
+{ch:6,q:"_____ is a benefit of family business that makes members more committed and passionate about the success of the business.",a:"Loyalty",d:["Loyalty","Legacy","Labour pool","Patience"]},
+{ch:6,q:"_____ is a benefit of family business that brings a sense of accomplishment and strong pride.",a:"Legacy",d:["Loyalty","Legacy","Labour pool","Career Opportunities"]},
+{ch:6,q:"_____ is a benefit of family business that permits members to be less driven by short-term financial results.",a:"Patience",d:["Loyalty","Legacy","Labour pool","Patience"]},
+{ch:6,q:"_____ is a benefit that makes family business a source of finance for both active and non-active family members.",a:"Financial Rewards",d:["Financial Rewards","Loyalty","Legacy","Career Opportunities"]},
+{ch:6,q:"_____ involves the start-up process of a business over a long period of time.",a:"Venture creation",d:["Venture creation","Family succession","Change management","Business expansion"]},
+{ch:6,q:"Every new venture requires some level of entrepreneurial skills and innovations with clearly defined _____.",a:"Vision",d:["Vision","Profit","Capital","Market"]},
+{ch:6,q:"_____ refers to the investigative activities a business conducts to improve existing products and procedures.",a:"Research and Development",d:["Research and Development","Market research","Environmental scanning","Business planning"]},
+{ch:6,q:"_____ is the art of leading an organisation during a change process without harming the human dimension of employees.",a:"Change management",d:["Change management","Business restructuring","Corporate venturing","Intrapreneurship"]},
+{ch:6,q:"_____ is the starting point for innovation.",a:"Creativity",d:["Creativity","Capital","Technology","Management"]},
+{ch:6,q:"_____ is the product/result of innovation.",a:"Change",d:["Change","Profit","Patent","Market share"]},
+{ch:6,q:"The stages of succession planning include goal identification, determination of how to meet goals, and _____.",a:"implementing the plan",d:["hiring a successor","implementing the plan","evaluating competitors","revising the business plan"]},
+{ch:6,q:"Future generations of successful family businesses should see the business as an _____, not as an entitlement.",a:"opportunity",d:["opportunity","obligation","investment","inheritance"]},
+{ch:6,q:"Control-oriented parents will end up _____ their succession planning.",a:"disrupting",d:["disrupting","improving","accelerating","completing"]},
+{ch:6,q:"The succession plan must always be in _____ form.",a:"written",d:["written","verbal","digital","confidential"]},
+// ===================== CHAPTER 7 =====================
+{ch:7,q:"Women entrepreneurs can be defined as women or a group of women who initiate, organise, and _____ a business enterprise.",a:"operate",d:["operate","fund","inherit","supervise"]},
+{ch:7,q:"Women entrepreneurship needs to be studied for _____ main reasons.",a:"two",d:["two","three","four","five"]},
+{ch:7,q:"Research has shown that women-owned businesses comprise between one quarter and one third of businesses in the _____ economy.",a:"formal",d:["formal","informal","global","national"]},
+{ch:7,q:"In countries where women are advanced, the economy has been _____.",a:"steady",d:["steady","stagnant","declining","unstable"]},
+{ch:7,q:"In countries where women are restricted, the economy has been _____.",a:"stagnant",d:["steady","stagnant","growing","advanced"]},
+{ch:7,q:"Factors that influence women to start businesses are grouped into two: push and _____ motivational factors.",a:"pull",d:["pull","supportive","social","environmental"]},
+{ch:7,q:"The _____ factors make women engage in business due to family compulsion and responsibility.",a:"push",d:["pull","push","external","social"]},
+{ch:7,q:"The need for independence, achievement, and self-fulfilment are _____ forces that motivate women to venture into business.",a:"pull",d:["pull","push","external","negative"]},
+{ch:7,q:"Ghosh & Cheruvalath (2007) found that only _____ of women are drawn into entrepreneurship by pull factors.",a:"one-fifth",d:["one-third","one-half","one-fifth","one-quarter"]},
+{ch:7,q:"To become a successful woman entrepreneur, women must be able to get _____ return out of invested capital.",a:"maximum",d:["maximum","minimum","average","guaranteed"]},
+{ch:7,q:"Which of the following is NOT listed as a barrier to women entrepreneurship?",a:"Excess of funding",d:["Lack of self-confidence","Excess of funding","Socio-cultural barrier","Lack of role models"]},
+{ch:7,q:"Inequality of Access to Credit is listed as a barrier to _____.",a:"Women Entrepreneurship",d:["Women Entrepreneurship","Social Entrepreneurship","Corporate Entrepreneurship","Technological Entrepreneurship"]},
+// ===================== CHAPTER 8 =====================
+{ch:8,q:"_____ can be defined as an alternative business model that produces social and environmental value with the aim of addressing social problems.",a:"Social Entrepreneurship",d:["Social Entrepreneurship","Corporate venturing","NGO","Cooperative"]},
+{ch:8,q:"Social Entrepreneurship is about solutions and transformations that will benefit individuals, communities, and _____ at large.",a:"societies",d:["societies","governments","corporations","shareholders"]},
+{ch:8,q:"_____ are people who realise where there is an opportunity to satisfy some unmet need that the state welfare system will not or cannot meet.",a:"Social Entrepreneurs",d:["Social Entrepreneurs","Government officials","NGO workers","Corporate managers"]},
+{ch:8,q:"According to Bornstein (1998), Social Entrepreneurs are leaders in the field of _____ change.",a:"social",d:["social","political","economic","technological"]},
+{ch:8,q:"Social entrepreneurs are change agents for _____.",a:"society",d:["society","government","business","technology"]},
+{ch:8,q:"_____ are private organisations dedicated to solving social problems and providing socially important goods.",a:"Social Enterprises",d:["Social Enterprises","NGOs","Cooperatives","Government agencies"]},
+{ch:8,q:"SRI stands for _____.",a:"Socially Responsible Investing",d:["Socially Responsible Investing","Social Reform Initiative","Social Resource Integration","Standard Responsibility Index"]},
+{ch:8,q:"The three sources of finance for Social Enterprises are External options, Internal Options, and _____.",a:"Crowd funding",d:["Crowd funding","Government grants","Angel investors","Venture capital"]},
+{ch:8,q:"Which of the following is NOT a form of Conventional Finance for social enterprises?",a:"Crowd funding",d:["Equity","Friends and Family","Crowd funding","Banks and Credit Unions"]},
+{ch:8,q:"A way of funding a social enterprise through gifts from foundations or wealthy individuals is called _____.",a:"Philanthropic grants",d:["Philanthropic grants","Crowd funding","Equity","Bank loan"]},
+{ch:8,q:"The collective cooperation of people to pool resources to support efforts initiated by other people or organisations is called _____.",a:"Crowd funding",d:["Crowd funding","Angel investing","Venture capital","Philanthropic grants"]},
+{ch:8,q:"_____ helps young people to assume leadership roles in social change.",a:"Youth Social Entrepreneurship",d:["Youth Social Entrepreneurship","Social Enterprise","NGO","Cooperative"]},
+{ch:8,q:"NGO stands for _____.",a:"Non-Governmental Organisation",d:["Non-Governmental Organisation","National Growth Organisation","Non-Grant Organisation","New Government Office"]},
+{ch:8,q:"The three major functions of NGOs according to Stromquist (2002) are Service delivery, Educational Provision, and _____.",a:"Public policy advocacy",d:["Public policy advocacy","Profit generation","Capital investment","Market research"]},
+{ch:8,q:"By level of operations, NGOs are classified into Community-based organisations, City-based Organisations, and _____.",a:"National NGOs",d:["National NGOs","International NGOs","Global NGOs","Federal NGOs"]},
+{ch:8,q:"In simple terms, _____ is the ability to confidently make choices and changes.",a:"Empowerment",d:["Empowerment","Leadership","Management","Organisation"]},
+{ch:8,q:"A _____ is a perceived and conscious thought of a business that can be done.",a:"Business idea",d:["Business idea","Business opportunity","Business plan","Feasibility study"]},
+{ch:8,q:"NGOs classified under _____ orientation have activities characterised by self-help projects where local people are involved.",a:"Participatory",d:["Participatory","Charitable","Service","Empowering"]},
+{ch:8,q:"By level of operations, Red Cross is classified under _____.",a:"National NGOs",d:["Community-based organizations","City-based Organizations","National NGOs","International NGOs"]},
+{ch:8,q:"A _____ is a revenue-generating venture with supreme focus on social objectives.",a:"Social Enterprise",d:["Social Enterprise","NGO","Cooperative","Non-profit"]},
+// ===================== CHAPTER 9 =====================
+{ch:9,q:"_____ is the first milestone in the process of founding a business.",a:"An Idea",d:["An Idea","A business plan","Capital","A team"]},
+{ch:9,q:"_____ refers to a favourable change available to run a specific business in a given environment at a given point in time.",a:"Business Opportunity",d:["Business Opportunity","Business idea","Market research","Feasibility study"]},
+{ch:9,q:"A business idea which offers benefits to customers by solving a problem or fulfilling a need is said to be _____.",a:"Relevant",d:["Relevant","Innovative","Unique","Profitable"]},
+{ch:9,q:"_____ involves the deliberate search of demand and supply levels to give information on unexploited niches.",a:"Market research / Environmental scanning",d:["Market research / Environmental scanning","Business planning","Feasibility study","Customer feedback"]},
+{ch:9,q:"_____ can be sourced when attending seminars, conferences, and exhibitions.",a:"Ideas",d:["Ideas","Capital","Employees","Technology"]},
+{ch:9,q:"Government policy statements can be a source of business ideas. True or False?",a:"True",d:["True","False","Sometimes","Rarely"]},
+{ch:9,q:"_____ are often the best sources of business ideas for a new venture.",a:"Customers",d:["Customers","Competitors","Banks","Government"]},
+{ch:9,q:"Customers' _____ and _____ can result in the creation of a new product or improvement.",a:"comments and complaints",d:["comments and complaints","payments and orders","referrals and reviews","queries and returns"]},
+{ch:9,q:"_____ often serve as a source of local knowledge and support to identify investment opportunity.",a:"Business relationships",d:["Business relationships","Bank loans","Government grants","Trade unions"]},
+{ch:9,q:"Venture capital is a type of _____ equity.",a:"private",d:["private","public","government","personal"]},
+{ch:9,q:"_____ are individuals often successful in business who commit personal funds into potentially rewarding business concerns.",a:"Business angels",d:["Business angels","Venture capitalists","Investment bankers","Hedge fund managers"]},
+{ch:9,q:"_____ is invested by firms or companies.",a:"Venture capital",d:["Venture capital","Angel financing","Personal savings","Grants"]},
+{ch:9,q:"The investment decision of the firm is also known as _____ decisions.",a:"capital budgeting",d:["capital budgeting","financing","dividend","working capital"]},
+{ch:9,q:"NPV stands for _____.",a:"Net Present Value",d:["Net Present Value","Net Profit Volume","New Present Value","Net Production Value"]},
+{ch:9,q:"Investment appraisal criteria can be divided into Traditional (Non-Discounted Cash Flow) and _____ techniques.",a:"Modern (Discounted Cash Flow)",d:["Modern (Discounted Cash Flow)","Statistical","Qualitative","Scenario-based"]},
+{ch:9,q:"Traditional Non-Discounted Cash Flow technique is divided into Payback Period (PBP) and _____.",a:"Accounting Rate of Return (ARR)",d:["Accounting Rate of Return (ARR)","Net Present Value","Internal Rate of Return","Profitability Index"]},
+{ch:9,q:"Modern Discounted Cash Flow Techniques include NPV, IRR, and _____.",a:"Profitability Index (PI)",d:["Profitability Index (PI)","ARR","PBP","Break-even analysis"]},
+{ch:9,q:"_____ enables one to determine the number of years it will take to recover the initial investment.",a:"Pay Back Period",d:["Pay Back Period","ARR","NPV","IRR"]},
+{ch:9,q:"The formula for payback period is: Payback = Cash Outlay ÷ _____.",a:"Annual Cash Inflow",d:["Annual Cash Inflow","Net Profit","Total Revenue","Total Cost"]},
+{ch:9,q:"For mutually exclusive projects, the project with the _____ payback period will be selected.",a:"shorter",d:["longer","shorter","equal","highest"]},
+{ch:9,q:"ARR stands for _____.",a:"Accounting Rate of Return",d:["Accounting Rate of Return","Annual Revenue Ratio","Asset Return Rate","Adjusted Rate of Return"]},
+{ch:9,q:"ARR = Average annual profit (after tax) ÷ _____.",a:"Average Investment in the project",d:["Average Investment in the project","Total Revenue","Total Assets","Net Cash Flow"]},
+{ch:9,q:"For mutually exclusive projects, accept the project with the _____ ARR.",a:"higher",d:["higher","lower","equal","closest to zero"]},
+{ch:9,q:"Discounted Cash Flow techniques recognise the _____ value of money.",a:"time",d:["time","market","intrinsic","face"]},
+{ch:9,q:"_____ can be described as the surplus of the present value of cash receipts over the present value of cash outlay on an investment.",a:"NPV",d:["NPV","IRR","ARR","PI"]},
+{ch:9,q:"A project is considered profitable when NPV is _____.",a:"positive",d:["positive","negative","zero","equal to IRR"]},
+{ch:9,q:"IRR is the rate of discount that equates the NPV to _____.",a:"zero",d:["zero","one","the cost of capital","maximum profit"]},
+{ch:9,q:"If NPV calculated is greater than zero, the discount rate is adjusted _____.",a:"upward",d:["upward","downward","unchanged","to zero"]},
+// ===================== CHAPTER 10 =====================
+{ch:10,q:"To venture means to _____.",a:"undertake",d:["undertake","invest","profit","expand"]},
+{ch:10,q:"_____ is a start-up enterprise formed with the expectation that financial gain will result.",a:"Business Venture",d:["Business Venture","Social enterprise","Non-profit","Cooperative"]},
+{ch:10,q:"A new venture is an enterprise that is in the process of being created by an _____.",a:"entrepreneur",d:["entrepreneur","investor","manager","banker"]},
+{ch:10,q:"Ferrell, Hirt and Ferrell define businesses as individuals or organisations who try to earn a profit by providing products that satisfy people's needs. True or False?",a:"True",d:["True","False","Partially","Depends on context"]},
+{ch:10,q:"_____ is an enterprise or organisation involved in trade and provision of goods and services to consumers for the purpose of making profits.",a:"Business",d:["Business","Social enterprise","NGO","Cooperative"]},
+{ch:10,q:"The four stages of business are Conceptual, Start-up, _____, and Stabilisation.",a:"Growth",d:["Growth","Expansion","Maturity","Decline"]},
+{ch:10,q:"_____ is an association of two or more persons who pool financial and managerial resources and agree to carry on a business and share its profit.",a:"Partnership",d:["Partnership","Corporation","Cooperative","Sole proprietorship"]},
+{ch:10,q:"In Section 1 of the Partnership Act, partnership is described as a relationship that subsists between persons carrying on a business in common with a view of making profit. This Act is from _____.",a:"1890",d:["1850","1870","1890","1920"]},
+{ch:10,q:"The minimum and maximum number of people to form a partnership are _____ and _____.",a:"two and twenty",d:["two and ten","two and twenty","three and fifty","one and twenty"]},
+{ch:10,q:"Which of the following is NOT a step in the conceptual stage of business?",a:"Observation",d:["Recognizing opportunity","Mobilizing the resources","Observation","Analyzing the idea"]},
+{ch:10,q:"The period referred to as a state where opportunity often opens and shuts depending on the business environment is called _____.",a:"Window of Opportunity",d:["Window of Opportunity","Business cycle","Market gap","Opportunity cost"]},
+{ch:10,q:"Push factors include unemployment, no other alternatives, and does not fit in the company. Which of the following is NOT a push factor?",a:"Independence",d:["Unemployment","Independence","No other alternatives","Does not fit company"]},
+{ch:10,q:"_____ is referred to as a one-man's business.",a:"Sole Proprietorship",d:["Sole Proprietorship","Partnership","Corporation","Cooperative"]},
+{ch:10,q:"Which of the following is NOT a disadvantage of sole proprietorship?",a:"Personal touch",d:["Lack of continuity","Limited resources","Personal touch","Unlimited liability"]},
+{ch:10,q:"Partners who actively participate in day-to-day operations are referred to as _____.",a:"Active or Managing Partners",d:["Active or Managing Partners","Sleeping Partners","Limited Partners","Nominal Partners"]},
+{ch:10,q:"A nominal partner is one who has full power in participating in the management of the business. True or False?",a:"False",d:["True","False","Partially","Depends on deed"]},
+{ch:10,q:"Partners whose losses and responsibilities are restricted to their shares only are known as _____ Partners.",a:"Limited",d:["Limited","General","Active","Sleeping"]},
+{ch:10,q:"Sleeping partners are those who do not participate in day-to-day activities of the business. True or False?",a:"True",d:["True","False","Sometimes","Rarely"]},
+{ch:10,q:"What is referred to as a blueprint that brings together the key elements of a business?",a:"Business Plan",d:["Business Plan","Feasibility study","Financial statement","Mission statement"]},
+{ch:10,q:"Corporations in Nigeria operate under the rules stipulated by the _____ (CAMA) of 1990.",a:"Companies and Allied Matters Act",d:["Companies and Allied Matters Act","Corporate Business Act","Nigerian Enterprise Decree","Investment and Securities Act"]},
+{ch:10,q:"Corporations are legal entities which exist separately from their owners, who are called _____.",a:"shareholders",d:["shareholders","directors","partners","members"]},
+{ch:10,q:"A company can be operated either as a public limited liability or _____ limited liability.",a:"private",d:["private","government","family","cooperative"]},
+{ch:10,q:"A _____ is a document that forms the constitution of a company, defining its objectives and powers with regards to its dealing with the outside world.",a:"Memorandum of Association",d:["Memorandum of Association","Article of Association","Deed of Partnership","Certificate of Incorporation"]},
+{ch:10,q:"An _____ is a document in which regulations governing internal management of the company's affairs, duties, rights and powers of members are stated.",a:"Article of Association",d:["Article of Association","Memorandum of Association","Deed of Partnership","Certificate of Incorporation"]},
+{ch:10,q:"The term cooperative is derived from the Latin word '_____'.",a:"co-operari",d:["co-operari","corporatum","communitas","collegium"]},
+{ch:10,q:"'Co' means 'with' and 'operari' means '_____'.",a:"to work",d:["to work","to profit","to manage","to grow"]},
+{ch:10,q:"The minimum number of members required to form a cooperative society is _____.",a:"ten",d:["five","seven","ten","fifteen"]},
+{ch:10,q:"A mini plan should range between _____ and _____ pages.",a:"one and ten",d:["one and ten","five and fifteen","ten and twenty","one and five"]},
+{ch:10,q:"A _____ plan serves as a tool to operate the business.",a:"working",d:["working","mini","presentation","electronic"]},
+{ch:10,q:"A _____ plan uses computer-driven overhead projectors and comes in handy during presentations.",a:"electronic",d:["electronic","mini","working","presentation"]},
+// ===================== CHAPTER 11 =====================
+{ch:11,q:"A clear growth strategy and strong execution infrastructure increase the probability of achieving profitable _____.",a:"growth",d:["growth","profit","market share","innovation"]},
+{ch:11,q:"The major growth strategies are _____ and external growth strategies.",a:"Internal",d:["Internal","Organic","Sustainable","Incremental"]},
+{ch:11,q:"The development of new products in a new market is an _____ growth strategy.",a:"internal",d:["internal","external","diversification","acquisition"]},
+{ch:11,q:"Diversification increases underutilisation of resources. True or False?",a:"False",d:["True","False","Depends on industry","Partially"]},
+{ch:11,q:"A widely diversified company will be able to respond to market changes quickly. True or False?",a:"True",d:["True","False","Partially","Depends on size"]},
+{ch:11,q:"Internal Growth strategies make a company grow very fast. True or False?",a:"False",d:["True","False","Partially","Depends on sector"]},
+{ch:11,q:"Mergers are usually skewed in favour of one party. True or False?",a:"False",d:["True","False","Partially","Always"]},
+{ch:11,q:"A _____ merger occurs between firms that produce similar products or offer similar services.",a:"Horizontal",d:["Horizontal","Vertical","Conglomerate","Concentric"]},
+{ch:11,q:"A _____ merger occurs between firms in different stages of production in the same industry.",a:"Vertical",d:["Horizontal","Vertical","Conglomerate","Concentric"]},
+{ch:11,q:"A _____ merger occurs between firms of totally unrelated activities.",a:"Conglomerate",d:["Horizontal","Vertical","Conglomerate","Concentric"]},
+{ch:11,q:"What kind of merger is ExxonMobil?",a:"Horizontal Merger",d:["Horizontal Merger","Vertical Merger","Conglomerate Merger","Concentric Merger"]},
+{ch:11,q:"_____ is the transaction which involves a firm buying another firm to use more effectively its core competence.",a:"Acquisition",d:["Acquisition","Merger","Joint venture","Strategic alliance"]},
+{ch:11,q:"The intentions of acquisition could be friendly or _____.",a:"hostile",d:["hostile","neutral","cooperative","voluntary"]},
+{ch:11,q:"_____ is the granting of permission by one company to another to use its intellectual property under defined conditions.",a:"Licensing",d:["Franchising","Licensing","Acquisition","Joint venture"]},
+{ch:11,q:"_____ is the licensing of a proprietary technology controlled by virtue of a utility patent.",a:"Technology licensing",d:["Technology licensing","Merchandise licensing","Character licensing","Service licensing"]},
+{ch:11,q:"_____ is the licensing of a recognised trademark controlled through a registered trademark or copyright.",a:"Merchandise or Character licensing",d:["Technology licensing","Merchandise or Character licensing","Franchise licensing","Service licensing"]},
+{ch:11,q:"_____ is a form of business where a firm licenses its trademark and method of doing business in exchange for a fee and royalty.",a:"Franchising",d:["Licensing","Strategic alliance","Franchising","Acquisition"]},
+{ch:11,q:"The person giving out the franchise license is called the _____ and the person receiving it is the _____.",a:"Franchisor and Franchisee",d:["Franchisor and Franchisee","Licensor and Licensee","Lessor and Lessee","Agent and Principal"]},
+{ch:11,q:"_____ is a partnership between two or more firms developed to achieve a definite goal.",a:"Strategic Alliances",d:["Strategic Alliances","Joint venture","Merger","Acquisition"]},
+{ch:11,q:"_____ is created when two or more firms pool a portion of their resources to create a separate, jointly owned organisation.",a:"Joint venture",d:["Joint venture","Merger","Acquisition","Strategic alliance"]},
+{ch:11,q:"A common reason to form a joint venture is to gain access to _____ markets.",a:"foreign",d:["foreign","domestic","niche","premium"]},
+{ch:11,q:"_____ is the type of agreement that occurs in a joint venture for a short period of time.",a:"Contractual agreement",d:["Contractual agreement","Equity agreement","Franchise agreement","Licensing agreement"]},
+{ch:11,q:"When companies collaborate at a single point in the value chain to gain economies of scale, it is called a _____ joint venture.",a:"Scale",d:["Scale","Link","Contractual","Strategic"]},
+{ch:11,q:"When the position of the parties is not symmetrical and objectives diverge, it is called a _____ joint venture.",a:"Link",d:["Scale","Link","Contractual","Strategic"]},
+{ch:11,q:"Buyouts occur when a buyer acquires more than _____ of the company.",a:"50 percent",d:["25 percent","33 percent","50 percent","75 percent"]},
+{ch:11,q:"MBOs provide an exit strategy for large corporations that want to sell off divisions not part of their core business. MBO stands for _____.",a:"Management Buyout",d:["Management Buyout","Market-Based Operation","Management-Based Organisation","Merger and Buyout"]},
+{ch:11,q:"LBO uses significant amount of borrowed money with the company's assets as collateral. LBO stands for _____.",a:"Leverage Buyout",d:["Leverage Buyout","Licensed Business Operation","Long-term Business Objective","Liquid Business Offer"]},
+{ch:11,q:"_____ involves the purchase from the outside of a company, with a completely new team taking ownership.",a:"Management buy-in",d:["Management buy-in","Management buyout","Leverage buyout","Acquisition"]},
+{ch:11,q:"BIMBO is the combination of _____ and _____.",a:"Management Buy-in and Management Buyout",d:["Management Buy-in and Management Buyout","Buyout and Merger Buyout","Bilateral Merger and Buyout","Business Investment and Management Buyout"]},
+// ===================== CHAPTER 12 =====================
+{ch:12,q:"_____, _____, and _____ determine the financial needs of a business.",a:"Type, nature and size",d:["Type, nature and size","Profit, loss and equity","Assets, liabilities and capital","Income, expenses and savings"]},
+{ch:12,q:"_____ is concerned with the source and means of raising funds for a business enterprise.",a:"Business Finance",d:["Business Finance","Accounting","Auditing","Banking"]},
+{ch:12,q:"Sources of finance could be categorised into _____ and external sources.",a:"internal",d:["internal","personal","informal","traditional"]},
+{ch:12,q:"_____ financing comes from the owner's savings.",a:"Owners' investment",d:["Owners' investment","Retained profit","Trade credit","Venture capital"]},
+{ch:12,q:"_____ is the most reliable source of financing for start-ups and sole proprietorships.",a:"Owners' investment",d:["Bank loan","Owners' investment","Venture capital","Trade credit"]},
+{ch:12,q:"_____ are funds generated from previous profits not distributed to shareholders as dividends.",a:"Retained profit / Earnings",d:["Retained profit / Earnings","Angel financing","Trade credit","Debenture stocks"]},
+{ch:12,q:"_____ is the fund raised from selling unsold stock available in the business.",a:"Sale of stock",d:["Sale of stock","Retained profit","Venture capital","Angel financing"]},
+{ch:12,q:"Which source of finance is available for investment after trading for more than a year?",a:"Retained profit / Earnings",d:["Retained profit / Earnings","Owners' investment","Bank loan","Trade credit"]},
+{ch:12,q:"_____ is a type of financing provided to emerging businesses deemed viable with high growth potential.",a:"Venture capital",d:["Venture capital","Bank loan","Trade credit","Leasing"]},
+{ch:12,q:"Which of the following is an INTERNAL source of funds?",a:"Retained profits",d:["Retained profits","Bank overdraft","Venture capital","Trade credit"]},
+{ch:12,q:"Which of the following is an EXTERNAL source of funds?",a:"Venture Capital",d:["Owners' Investment","Retained Profits","Venture Capital","Sale of Stock"]},
+{ch:12,q:"_____ are high net worth individuals who invest their money, time and expertise directly in unquoted companies.",a:"Angel investors or Business angels",d:["Angel investors or Business angels","Venture capitalists","Investment bankers","Hedge fund managers"]},
+{ch:12,q:"The typical venture capital investment occurs after an initial _____ round.",a:"seed funding",d:["seed funding","Series A","Series B","IPO"]},
+{ch:12,q:"The first round of institutional venture capital to fund growth is called the _____ round.",a:"Series A",d:["Seed round","Series A","Series B","Series C"]},
+{ch:12,q:"IPO stands for _____.",a:"Initial Public Offering",d:["Initial Public Offering","Internal Profit Objective","International Purchase Order","Investment Portfolio Option"]},
+{ch:12,q:"Doing a merger and acquisition of a company is also known as a '_____'.",a:"trade sale",d:["trade sale","public offering","buyout","takeover"]},
+{ch:12,q:"_____ is a medium-term financing apparatus that allows a business to obtain assets without capital for outright purchase.",a:"Leasing",d:["Leasing","Factoring","Hire purchase","Trade credit"]},
+{ch:12,q:"The three types of leases are Operating lease, Financial lease, and _____.",a:"Sale and leaseback",d:["Sale and leaseback","Hire purchase","Factoring","Crowd funding"]},
+{ch:12,q:"_____ as a source of financing involves handing over account receivables to a factor agent for collection.",a:"Factoring",d:["Factoring","Leasing","Crowd funding","Overdraft"]},
+{ch:12,q:"_____ is a situation where payments for goods and services by the buyer are deferred to a later date.",a:"Trade Credit",d:["Trade Credit","Leasing","Factoring","Bank overdraft"]},
+{ch:12,q:"Trade credit is summed up by the phrase '_____'.",a:"buy now, pay later",d:["buy now, pay later","credit first, earn later","spend now, save later","acquire now, repay tomorrow"]},
+{ch:12,q:"Crowd funding is also referred to as _____.",a:"crowd sourcing",d:["crowd sourcing","crowd investing","crowd lending","crowd trading"]},
+{ch:12,q:"A _____ is a group of shares.",a:"stock",d:["stock","bond","debenture","dividend"]},
+{ch:12,q:"Equity shares, common stock, and ordinary shares all mean the same thing. True or False?",a:"True",d:["True","False","Partially","Depends on country"]},
+{ch:12,q:"_____ stocks are corporate bonds issued by a company or government, secured by company assets.",a:"Debentures",d:["Debentures","Preference shares","Common stock","Treasury notes"]},
+{ch:12,q:"The two categories of debentures are All Bank Debentures and _____.",a:"Debenture Stocks",d:["Debenture Stocks","Preference shares","Ordinary shares","Treasury bills"]},
+// ===================== CHAPTER 13 =====================
+{ch:13,q:"_____ can be defined as the process by which companies create value for customers and build strong customer relationships.",a:"Marketing",d:["Marketing","Selling","Advertising","Promotion"]},
+{ch:13,q:"_____ is an important function of marketing whereby ownership of goods is transferred from seller to buyer for a price.",a:"Selling",d:["Selling","Marketing","Advertising","Distribution"]},
+{ch:13,q:"_____ focuses on earning profits through maximisation of sales.",a:"Selling",d:["Selling","Marketing","Advertising","Branding"]},
+{ch:13,q:"_____ is an integrated approach to achieve long-term goals like creating, maintaining, and retaining customers.",a:"Marketing",d:["Marketing","Selling","Advertising","Promotion"]},
+{ch:13,q:"The 4Ps of marketing are Product, Price, _____ and Place.",a:"Promotion",d:["Promotion","Profit","Process","People"]},
+{ch:13,q:"According to Kotler and Armstrong (2010), _____ is the particular blend of controllable marketing variables the firm uses to achieve its objective in the target market.",a:"Marketing mix",d:["Marketing mix","Marketing strategy","Marketing plan","Marketing audit"]},
+{ch:13,q:"_____ is anything that can be offered to market for attention, acquisition, use, or consumption that may satisfy a want or need.",a:"Product",d:["Product","Price","Place","Promotion"]},
+{ch:13,q:"The Chartered Institute of Marketing views marketing as the management process of anticipatorily identifying and satisfying _____ requirements profitably.",a:"customer",d:["customer","market","product","financial"]},
+{ch:13,q:"_____ is the second most important element of the marketing mix.",a:"Price",d:["Product","Price","Promotion","Place"]},
+{ch:13,q:"Price _____ strategy involves setting an initial high price to 'skim' revenue from the market.",a:"Skimming",d:["Skimming","Penetration","Competitive","Premium"]},
+{ch:13,q:"_____ or distribution is the means by which the final consumer gets a product from the producer.",a:"Place",d:["Place","Promotion","Price","Packaging"]},
+{ch:13,q:"_____ is an intermediary with legal authority to act on behalf of the producer.",a:"Agent",d:["Retailer","Wholesaler","Distributor","Agent"]},
+{ch:13,q:"_____ is the function of informing, persuading, and influencing the consumer's purchase decision.",a:"Promotion",d:["Pricing","Promotion","Packaging","Place"]},
+{ch:13,q:"Advertising can be persuasive, informative, and _____.",a:"competitive",d:["competitive","creative","traditional","digital"]},
+{ch:13,q:"Consumer goods are classified on the basis of '_____'.",a:"consumer shopping habits",d:["consumer shopping habits","product price range","brand value","production cost"]},
+{ch:13,q:"_____ goods are frequently bought consumer items such as food.",a:"Convenience",d:["Convenience","Shopping","Specialty","Unsought"]},
+{ch:13,q:"Convenience goods can be further classified into Staples, Impulse, and _____ goods.",a:"Emergency",d:["Emergency","Luxury","Essential","Regular"]},
+{ch:13,q:"_____ goods are less frequently bought items such as electrical appliances.",a:"Shopping",d:["Convenience","Shopping","Specialty","Unsought"]},
+{ch:13,q:"_____ goods are luxurious items such as a Lamborghini automobile.",a:"Specialty",d:["Convenience","Shopping","Specialty","Unsought"]},
+{ch:13,q:"_____ goods are either unknown or unwanted by consumers, such as encyclopaedias and caskets.",a:"Unsought",d:["Convenience","Shopping","Specialty","Unsought"]},
+{ch:13,q:"The three categories of industrial products are Materials and Parts, Capital Items, and _____.",a:"Supplies and Services",d:["Supplies and Services","Machinery and Equipment","Labour and Technology","Raw materials only"]},
+{ch:13,q:"A _____ is a name, term, sign, symbol or design that identifies the products or services of a seller.",a:"Brand",d:["Brand","Trademark","Copyright","Patent"]},
+{ch:13,q:"_____ refers to a part of a brand which can be vocalised.",a:"Brand Name",d:["Brand Name","Brand Mark","Trademark","Copyright"]},
+{ch:13,q:"_____ is that part of a brand which can be recognised but is not utterable.",a:"Brand Mark",d:["Brand Name","Brand Mark","Trademark","Copyright"]},
+{ch:13,q:"_____ is the exclusive right to reproduce published materials and sell.",a:"Copyright",d:["Copyright","Trademark","Patent","Trade secret"]},
+{ch:13,q:"_____ is defined as the activities involved in designing and producing the container or wrapper for a product.",a:"Packaging",d:["Packaging","Branding","Labelling","Marketing"]},
+{ch:13,q:"The customer's first contact with a product is the _____.",a:"Packaging",d:["Packaging","Price","Brand name","Advertisement"]},
+{ch:13,q:"The three levels of packaging are Primary, Secondary, and _____.",a:"Shipping / tertiary",d:["Shipping / tertiary","Outer","Bulk","Final"]},
+{ch:13,q:"_____ refers to any potential information appearing on or with the package that describes the product.",a:"Labelling",d:["Labelling","Packaging","Branding","Advertising"]},
+{ch:13,q:"_____ is an intermediary that sells goods or services directly to final consumers.",a:"Retailer",d:["Retailer","Wholesaler","Distributor","Agent"]},
+{ch:13,q:"_____ is an intermediary that sells goods to those who buy for resale or business use.",a:"Wholesaler",d:["Retailer","Wholesaler","Distributor","Agent"]},
+{ch:13,q:"Which of the following is NOT one of the five promotional mix elements?",a:"Packaging",d:["Advertising","Sales Promotion","Packaging","Personal Selling"]},
+{ch:13,q:"_____ marketing uses digital channels to achieve the same goals as traditional marketing.",a:"Electronic",d:["Electronic","Social","Viral","Content"]},
+{ch:13,q:"Electronic marketing, digital marketing, Internet marketing, and web marketing all mean '_____'.",a:"Marketing online",d:["Marketing online","Social media marketing","Viral marketing","Content marketing"]},
+// ===================== CHAPTER 14 =====================
+{ch:14,q:"_____ refers to the study of whatever is right and good for humans.",a:"Ethics",d:["Ethics","Morality","Law","Policy"]},
+{ch:14,q:"_____ are codes of values and principles that govern the action of a person or group regarding what is right versus what is wrong.",a:"Ethics",d:["Ethics","Laws","Policies","Regulations"]},
+{ch:14,q:"Ethics is generally recognized as stemming from the Greek word 'ethos', meaning 'custom and _____'.",a:"usage",d:["usage","practice","behaviour","law"]},
+{ch:14,q:"Ethics may be called _____ within an organisation.",a:"morality",d:["morality","policy","regulation","compliance"]},
+{ch:14,q:"_____ is defined as the study of behaviour and morals in a business situation (Hisrich and Peters, 2002).",a:"Business Ethics",d:["Business Ethics","Corporate Governance","Business Law","Social Responsibility"]},
+{ch:14,q:"Business Ethics sets the standard for how business is conducted and defines the _____ of how to operate in the marketplace.",a:"value system",d:["value system","price system","reward system","legal system"]},
+{ch:14,q:"_____ behaviour conforms to rules, while _____ behaviour violates them.",a:"Ethical and Unethical",d:["Ethical and Unethical","Legal and Illegal","Moral and Immoral","Formal and Informal"]},
+{ch:14,q:"A _____ is someone who reports illegal activity in the firm to the press, government, or other parties outside the firm.",a:"Whistle blower",d:["Whistle blower","Auditor","Inspector","Regulator"]},
+{ch:14,q:"EFCC stands for _____.",a:"Economic and Financial Crimes Commission",d:["Economic and Financial Crimes Commission","Enterprise and Finance Control Commission","Economic and Financial Commerce Commission","Enforcement of Financial Crime Commission"]},
+{ch:14,q:"ICPC stands for _____.",a:"Independent Corrupt Practices Commission",d:["Independent Corrupt Practices Commission","International Crime Prevention Commission","Independent Corporate Practices Commission","International Corrupt Practices Control"]},
+{ch:14,q:"NAFDAC stands for _____.",a:"National Agency for Food and Drug Administration and Control",d:["National Agency for Food and Drug Administration and Control","National Authority for Food and Drug Accreditation and Certification","Nigerian Agency for Food and Drug Assessment and Control","National Administration for Food and Drug Approval and Control"]},
+{ch:14,q:"CSR stands for _____.",a:"Corporate Social Responsibility",d:["Corporate Social Responsibility","Customer Service Relations","Commercial Standards Regulation","Consumer Satisfaction Rating"]},
+{ch:14,q:"_____ refers to the approach an organisation takes in balancing its responsibilities toward various stakeholders.",a:"Social Responsibility",d:["Social Responsibility","Corporate Ethics","Business Conduct","Stakeholder Management"]},
+{ch:14,q:"Which of the following is NOT one of the types of responsibilities a firm could be involved with?",a:"Political responsibility",d:["Economic responsibility","Legal responsibility","Political responsibility","Discretionary responsibilities"]},
+// ===================== CHAPTER 15 =====================
+{ch:15,q:"The type of production where producers produce goods only for themselves and their families is called _____ production.",a:"Subsistence",d:["Subsistence","Commercial","Industrial","Agricultural"]},
+{ch:15,q:"_____ is the system of exchanging goods for goods.",a:"Trade by barter",d:["Trade by barter","E-commerce","Cash trading","Commodity exchange"]},
+{ch:15,q:"During the trans-Saharan trade era in Nigeria, _____ were used as means of transportation.",a:"Camels",d:["Camels","Horses","Donkeys","Elephants"]},
+{ch:15,q:"In what century did the missionaries come to Africa?",a:"15th Century",d:["12th Century","13th Century","14th Century","15th Century"]},
+{ch:15,q:"UAC stands for _____.",a:"United African Company",d:["United African Company","Universal African Commerce","United African Corporation","United African Cooperative"]},
+{ch:15,q:"By the 1960s, Nigeria became well known for the export of Palm oil, cocoa, groundnuts, and _____.",a:"crude oil",d:["crude oil","rubber","timber","cotton"]},
+{ch:15,q:"ICT stands for _____.",a:"Information and Communication Technology",d:["Information and Communication Technology","International Commerce and Trade","Industrial and Commercial Technology","Innovation and Communication Tools"]},
+{ch:15,q:"_____ is the exchange of goods and/or services between parties using electronic tools and techniques.",a:"e-Commerce",d:["e-Commerce","e-Business","Digital trade","Online retail"]},
+{ch:15,q:"According to Kumar et al (2014), how many types of e-commerce transactions exist?",a:"4",d:["2","3","4","5"]},
+{ch:15,q:"B2B in e-commerce stands for _____.",a:"Business-to-Business",d:["Business-to-Business","Buyer-to-Buyer","Brand-to-Brand","Business-to-Buyer"]},
+{ch:15,q:"B2C in e-commerce stands for _____.",a:"Business-to-Customer",d:["Business-to-Customer","Buyer-to-Consumer","Brand-to-Consumer","Business-to-Commerce"]},
+{ch:15,q:"C2C in e-commerce stands for _____.",a:"Customer-to-Customer",d:["Customer-to-Customer","Company-to-Company","Commerce-to-Consumer","Consumer-to-Corporation"]},
+{ch:15,q:"Amazon can be classified under which type of e-commerce?",a:"B2C",d:["B2B","B2C","C2C","C2B"]},
+{ch:15,q:"The most popular type of e-commerce is _____.",a:"B2C",d:["B2B","B2C","C2C","C2B"]},
+{ch:15,q:"e-Commerce encourages the activities of middlemen. True or False?",a:"False",d:["True","False","Partially","Depends on model"]},
+{ch:15,q:"Geographical boundaries are a big limitation to e-commerce. True or False?",a:"False",d:["True","False","Partially","Only for B2B"]},
+{ch:15,q:"The two major components of e-commerce are _____ and back-end operations.",a:"Front-end",d:["Front-end","Sales-end","Customer-end","Public-end"]},
+{ch:15,q:"The operation of a website that deals with public relations and users' experience is _____.",a:"Front-end operations",d:["Front-end operations","Back-end operations","Middle operations","Core operations"]},
+{ch:15,q:"Activities such as accounting, inventory, and financing are classified under front-end operations. True or False?",a:"False",d:["True","False","Partially","Depends on company"]},
+{ch:15,q:"_____ allows an internet company to accept payments through major credit cards.",a:"Merchant account",d:["Merchant account","Payment gateway","Shopping cart","Digital wallet"]},
+{ch:15,q:"A software that accepts product orders and automatically calculates totals based on product availability is called a _____.",a:"Shopping cart",d:["Shopping cart","Merchant account","Payment gateway","Order system"]},
+{ch:15,q:"SEO stands for _____.",a:"Search Engine Optimization",d:["Search Engine Optimization","Search Engine Operation","Site Enhancement Online","Search Enhancement Option"]},
+{ch:15,q:"The operations of conventional business that customers rarely see or hear is called _____.",a:"Back-end operations",d:["Back-end operations","Front-end operations","Core operations","Hidden operations"]},
+{ch:15,q:"The adoption of internet for commercial activities discourages unemployment. True or False?",a:"False",d:["True","False","Partially","Depends on country"]},
+// ===================== CHAPTER 16 =====================
+{ch:16,q:"_____ is an observable event that occurs very quickly.",a:"Change",d:["Change","Transition","Transformation","Revolution"]},
+{ch:16,q:"_____ is a process which is usually intangible and unobservable as a thing changes from one state to another.",a:"Transition",d:["Transition","Change","Transformation","Evolution"]},
+{ch:16,q:"Masterson (2008) submitted about _____ stages of business growth: start-up/infancy, fast growth/childhood, adolescent, and maturity.",a:"four",d:["four","five","six","three"]},
+{ch:16,q:"Greiner first proposed _____ phases of business growth in 1972 but later added an additional phase in 1998.",a:"five",d:["four","five","six","seven"]},
+{ch:16,q:"During Phase One (Growth through Creativity), the crisis that surfaces because the entrepreneur lacks managerial skills is called the _____.",a:"Crisis of leadership",d:["Crisis of leadership","Crisis of autonomy","Control crisis","Red Tape crisis"]},
+{ch:16,q:"During Phase One, communications between staff are initially _____ but become formal as more hands are hired.",a:"informal",d:["informal","formal","structured","hierarchical"]},
+{ch:16,q:"In an environment of formal lines of communications, _____, Marketing, and Production are emphasised.",a:"Budgeting",d:["Budgeting","Strategy","Innovation","Research"]},
+{ch:16,q:"The crisis that necessitates the founding of new structures that rely heavily on delegation of powers is called _____.",a:"Crisis of autonomy",d:["Crisis of autonomy","Crisis of leadership","Control crisis","Red Tape crisis"]},
+{ch:16,q:"Phase Two of business growth is called 'Fast growth/childhood' or Growth through _____.",a:"direction",d:["direction","delegation","creativity","collaboration"]},
+{ch:16,q:"Phase Three of business growth involves delegation of duties as the basis of promoting growth. Middle-level managers may exist at this stage. True or False?",a:"True",d:["True","False","Partially","Only in large firms"]},
+{ch:16,q:"When top-level managers lose control because middle managers pass decisions inappropriately, this is referred to as _____.",a:"Control crisis",d:["Control crisis","Crisis of autonomy","Crisis of leadership","Red Tape crisis"]},
+{ch:16,q:"In Phase Four (Maturity), growth continues as loosely organised business units are reorganised into _____.",a:"Product groups",d:["Product groups","Departments","Subsidiaries","Divisions"]},
+{ch:16,q:"Phase Four ends with a _____ crisis in which increasing reports and controls add layers of bureaucracy at all levels.",a:"Red Tape",d:["Red Tape","Control","Autonomy","Leadership"]},
+{ch:16,q:"When structures are introduced to connect people in departments in many ways, it is referred to as _____.",a:"Matrix management",d:["Matrix management","Flat management","Hierarchical management","Circular management"]},
+{ch:16,q:"Phase Five is Growth through _____, where reward systems emphasise group efforts over individual efforts.",a:"collaboration",d:["collaboration","delegation","direction","creativity"]},
+{ch:16,q:"In Phase Five, growth must be achieved without stretching existing systems. The crisis that surfaces is the _____ crisis.",a:"Internal growth",d:["Internal growth","Control","Red Tape","Autonomy"]},
+{ch:16,q:"The five critical factors that drive a successful transition process are: Planning, Decision making, Business control, Personal discipline, and _____.",a:"Pressure management",d:["Pressure management","Innovation","Marketing","Finance"]},
+{ch:16,q:"Generally, _____ can be defined as deciding in advance what to do, how to do it, when to do it, and who is to do it.",a:"Planning",d:["Planning","Organising","Controlling","Directing"]},
+{ch:16,q:"Long-term planning is usually _____ in nature.",a:"Strategic",d:["Strategic","Operational","Tactical","Functional"]},
+{ch:16,q:"How many steps are involved in the planning process of the business transition process?",a:"Eight",d:["Four","Six","Eight","Ten"]},
+{ch:16,q:"The three pitfalls to avoid in the planning process are: non-collaborative attitude, not considering all stakeholders, and _____.",a:"Losing control",d:["Losing control","Lack of funding","Poor marketing","Weak leadership"]},
+{ch:16,q:"_____ can be defined as the process of identifying and selecting a course of action to solve a specific problem.",a:"Decision-making",d:["Decision-making","Planning","Controlling","Organising"]},
+{ch:16,q:"Managers make decisions under three possible conditions: certainty, risk, and _____.",a:"uncertainty",d:["uncertainty","ambiguity","pressure","conflict"]},
+{ch:16,q:"_____ is the process of evaluating and correcting the activities of subordinates to make sure plans are completed and goals are achieved.",a:"Business control",d:["Business control","Planning","Decision-making","Organising"]},
+{ch:16,q:"_____ as a virtue would make a manager do what needs to be done, when it needs to be done, whether or not he likes it.",a:"Self-discipline",d:["Self-discipline","Motivation","Ambition","Confidence"]},
+{ch:16,q:"_____ is a state which affects the nervous system and causes it to swing into action, stimulating various body organs.",a:"Stress",d:["Stress","Fatigue","Anxiety","Depression"]},
+{ch:16,q:"CIPD identified _____ main causes of stress.",a:"five",d:["three","four","five","six"]},
+{ch:16,q:"CIPD stands for _____.",a:"Chartered Institute of Personnel and Development",d:["Chartered Institute of Personnel and Development","Corporate Institute of People Development","Central Institute of Professional Development","Certified Institute of Personnel and Development"]},
+];
+
+// State
+let mode='mcq', selChs=new Set(Object.keys(CHAPTERS).map(Number)), qCount=20;
+let quizQ=[], cur=0, correct=0, wrong=0, skipped=0;
+let answered=false, timerInt=null, timeLeft=20;
+let results=[], wrongQ=[];
+
+// Build chapter filter
+const chGrid=document.getElementById('ch-grid');
+const allPill=document.createElement('span');
+allPill.className='ch-pill on'; allPill.textContent='All chapters';
+allPill.onclick=()=>{
+  const allOn=selChs.size===Object.keys(CHAPTERS).length;
+  if(allOn){selChs.clear();document.querySelectorAll('.ch-pill.individual').forEach(p=>p.classList.remove('on'));}
+  else{Object.keys(CHAPTERS).forEach(k=>selChs.add(Number(k)));document.querySelectorAll('.ch-pill.individual').forEach(p=>p.classList.add('on'));}
+  allPill.classList.toggle('on',!allOn);
+};
+chGrid.appendChild(allPill);
+Object.entries(CHAPTERS).forEach(([k,v])=>{
+  const p=document.createElement('span');
+  p.className='ch-pill individual on'; p.textContent='Ch '+k;
+  p.title=v; p.dataset.ch=k;
+  p.onclick=()=>{
+    const n=Number(k);
+    if(selChs.has(n)){selChs.delete(n);p.classList.remove('on');}
+    else{selChs.add(n);p.classList.add('on');}
+    allPill.classList.toggle('on',selChs.size===Object.keys(CHAPTERS).length);
+  };
+  chGrid.appendChild(p);
+});
+
+document.getElementById('q-count').addEventListener('input',e=>{qCount=Number(e.target.value);});
+
+function selectMode(el){
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected'); mode=el.dataset.mode;
+}
+
+function shuffle(a){return [...a].sort(()=>Math.random()-0.5);}
+
+function startQuiz(pool){
+  if(!pool){
+    let base=selChs.size?DB.filter(q=>selChs.has(q.ch)):DB;
+    if(!base.length){alert('Please select at least one chapter.');return;}
+    pool=shuffle(base).slice(0,Math.min(qCount,base.length));
+  }
+  quizQ=pool.map(q=>({...q,shuffled:shuffle(q.d)}));
+  cur=0;correct=0;wrong=0;skipped=0;results=[];wrongQ=[];
+  show('quiz');renderQ();
+}
+
+function renderQ(){
+  clearInterval(timerInt); answered=false;
+  const q=quizQ[cur], total=quizQ.length;
+  document.getElementById('prog').style.width=(cur/total*100)+'%';
+  document.getElementById('q-counter').textContent=(cur+1)+' / '+total;
+  document.getElementById('q-ch-badge').textContent='Ch '+q.ch+' — '+CHAPTERS[q.ch];
+  const isTimedMCQ=mode==='timed';
+  const isFITB=mode==='fitb'||(mode==='mixed'&&cur%2===1);
+  document.getElementById('q-mode-badge').textContent=isFITB?'Fill in Blank':'Multiple Choice';
+  document.getElementById('q-text').innerHTML=q.q.replace('_____','<span class="blank">_____</span>');
+  document.getElementById('feedback').className='feedback hidden';
+  const timerEl=document.getElementById('timer');
+  if(isTimedMCQ){
+    timerEl.classList.remove('hidden');timeLeft=20;timerEl.textContent='20';timerEl.className='timer';
+    timerInt=setInterval(()=>{
+      timeLeft--;timerEl.textContent=timeLeft;
+      if(timeLeft<=10)timerEl.className='timer warn';
+      if(timeLeft<=5)timerEl.className='timer danger';
+      if(timeLeft<=0){clearInterval(timerInt);autoFail(q,isFITB);}
+    },1000);
+  } else {timerEl.className='timer hidden';}
+  const body=document.getElementById('q-body');
+  if(isFITB){
+    body.innerHTML=`<div class="fitb-wrap"><input class="fitb-input" id="fitb-in" type="text" placeholder="Type your answer here..." autocomplete="off" spellcheck="false"><button class="fitb-submit" id="fitb-btn" onclick="checkFITB(quizQ[cur])">Submit</button></div>`;
+    const inp=document.getElementById('fitb-in');
+    inp.focus();
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkFITB(q);});
+  } else {
+    body.innerHTML='<div class="options" id="opts"></div>';
+    const opts=document.getElementById('opts');
+    const letters=['A','B','C','D'];
+    q.shuffled.forEach((opt,i)=>{
+      const div=document.createElement('div');
+      div.className='opt';
+      div.innerHTML=`<div class="opt-letter">${letters[i]}</div><span>${opt}</span>`;
+      div.onclick=()=>selectOpt(div,opt,q);
+      opts.appendChild(div);
+    });
+  }
+  document.getElementById('next-btn').classList.add('hidden');
+  document.getElementById('skip-btn').classList.toggle('hidden',isTimedMCQ);
+}
+
+function autoFail(q,isFITB){
+  if(answered)return;
+  answered=true;skipped++;wrongQ.push(q);
+  results.push({q,chosen:null,correct:false,skipped:true});
+  if(isFITB){const inp=document.getElementById('fitb-in');if(inp)inp.disabled=true;document.getElementById('fitb-btn').disabled=true;}
+  else{document.querySelectorAll('.opt').forEach(o=>{o.classList.add('disabled');if(o.querySelector('span').textContent===q.a)o.classList.add('show-correct');});}
+  showFeedback(false,q.a,null,"Time's up!");
+  document.getElementById('next-btn').classList.remove('hidden');
+  document.getElementById('skip-btn').classList.add('hidden');
+}
+
+function selectOpt(div,opt,q){
+  if(answered)return;
+  clearInterval(timerInt);answered=true;
+  const isCorrect=opt===q.a;
+  document.querySelectorAll('.opt').forEach(o=>{
+    o.classList.add('disabled');
+    if(o.querySelector('span').textContent===q.a)o.classList.add('show-correct');
+  });
+  div.classList.remove('show-correct');
+  div.classList.add(isCorrect?'correct':'wrong');
+  if(isCorrect)correct++;else{wrong++;wrongQ.push(q);}
+  results.push({q,chosen:opt,correct:isCorrect,skipped:false});
+  showFeedback(isCorrect,q.a,opt);
+  document.getElementById('next-btn').classList.remove('hidden');
+  document.getElementById('skip-btn').classList.add('hidden');
+}
+
+function checkFITB(q){
+  if(answered)return;
+  const inp=document.getElementById('fitb-in');
+  const val=inp.value.trim();
+  if(!val){inp.focus();return;}
+  answered=true;
+  const isCorrect=val.toLowerCase()===q.a.toLowerCase()||(q.a.toLowerCase().includes(val.toLowerCase())&&val.length>3);
+  inp.disabled=true;document.getElementById('fitb-btn').disabled=true;
+  inp.classList.add(isCorrect?'correct':'wrong');
+  if(isCorrect)correct++;else{wrong++;wrongQ.push(q);}
+  results.push({q,chosen:val,correct:isCorrect,skipped:false});
+  showFeedback(isCorrect,q.a,val);
+  document.getElementById('next-btn').classList.remove('hidden');
+  document.getElementById('skip-btn').classList.add('hidden');
+}
+
+function showFeedback(isCorrect,ans,chosen,prefix){
+  const fb=document.getElementById('feedback');
+  fb.className='feedback '+(isCorrect?'correct':'wrong');
+  if(isCorrect){fb.innerHTML='✓ Correct! <strong>'+ans+'</strong>';}
+  else{fb.innerHTML=(prefix?prefix+' ':'✗ Wrong. ')+'Correct answer: <strong>'+ans+'</strong>';}
+}
+
+function skipQ(){
+  if(answered)return;
+  clearInterval(timerInt);skipped++;
+  wrongQ.push(quizQ[cur]);
+  results.push({q:quizQ[cur],chosen:null,correct:false,skipped:true});
+  cur++;
+  if(cur>=quizQ.length){endQuiz();return;}
+  renderQ();
+}
+
+function nextQ(){
+  cur++;
+  if(cur>=quizQ.length){endQuiz();return;}
+  renderQ();
+}
+
+function confirmEnd(){
+  if(confirm('End the quiz now? Your current progress will be scored.'))endQuiz();
+}
+
+function endQuiz(){
+  clearInterval(timerInt);
+  const total=quizQ.length;
+  const pct=Math.round(correct/total*100);
+  document.getElementById('s-pct').textContent=pct+'%';
+  document.getElementById('s-pct').className='score-pct '+(pct>=70?'pass':pct>=50?'':'fail');
+  const grades=pct>=70?['Pass — Well done!','You have a solid grasp of the material.']:pct>=50?['Average','Keep revising. You are almost there.']:['Needs Improvement','Focus on the highlighted chapters below.'];
+  document.getElementById('s-grade').textContent=grades[0];
+  document.getElementById('s-sub').textContent=grades[1];
+  document.getElementById('s-correct').textContent=correct;
+  document.getElementById('s-wrong').textContent=wrong;
+  document.getElementById('s-skip').textContent=skipped;
+  document.getElementById('nav-score').style.display='';
+  document.getElementById('nav-score').innerHTML='Score: <b>'+pct+'%</b> ('+correct+'/'+total+')';
+  const chMap={};
+  wrongQ.forEach(q=>{chMap[q.ch]=(chMap[q.ch]||0)+1;});
+  const weakDiv=document.getElementById('weak-section');
+  if(Object.keys(chMap).length){
+    const maxW=Math.max(...Object.values(chMap));
+    weakDiv.innerHTML='<h3>Chapters needing revision</h3>';
+    Object.entries(chMap).sort((a,b)=>b[1]-a[1]).forEach(([ch,cnt])=>{
+      weakDiv.innerHTML+=`<div class="ch-bar-row"><div class="ch-bar-label">Ch ${ch}: ${CHAPTERS[ch].split(' ')[0]}</div><div class="ch-bar"><div class="ch-bar-fill" style="width:${Math.round(cnt/maxW*100)}%"></div></div><div class="ch-bar-count">${cnt} wrong</div></div>`;
+    });
+  } else {weakDiv.innerHTML='<p style="font-size:14px;color:var(--text2);text-align:center;padding:1rem">🎉 No weak areas — perfect score!</p>';}
+  document.getElementById('review-btn').style.display=wrongQ.length?'':'none';
+  document.getElementById('review-section').classList.add('hidden');
+  show('score');
+}
+
+function showReview(){
+  const sec=document.getElementById('review-section');
+  sec.classList.remove('hidden');
+  const list=document.getElementById('review-list');
+  list.innerHTML='';
+  results.forEach(r=>{
+    if(r.correct)return;
+    const div=document.createElement('div');
+    div.className='review-item';
+    const yourAns=r.skipped?'<em>Skipped</em>':`<span class="wrong-text">${r.chosen}</span>`;
+    div.innerHTML=`<div class="q-meta"><span class="q-badge badge-ch">Ch ${r.q.ch}</span></div><div class="review-q">${r.q.q}</div><div class="review-a">Your answer: ${yourAns}</div><div class="review-a">Correct: <span class="correct-text">${r.q.a}</span></div>`;
+    list.appendChild(div);
+  });
+  sec.scrollIntoView({behavior:'smooth'});
+}
+
+function restartSame(){startQuiz();}
+function goHome(){show('home');document.getElementById('nav-score').style.display='none';}
+function show(id){['home','quiz','score'].forEach(s=>document.getElementById(s).style.display=s===id?'block':'none');}
+</script>
+</body>
+</html>
